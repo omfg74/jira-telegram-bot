@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "app.telegram.refresh.timeout",
+      "type": "java.lang.String",
+      "description": "Timeout of refreshing telegram messages."
+    },
+    {
+      "name": "app.telegrambot.url",
+      "type": "java.lang.String",
+      "description": " telegrambot.url."
+    },
+    {
+      "name": "app.telegrambot.token",
+      "type": "java.lang.String",
+      "description": "telegrambot.token."
+    }
+  ] }
