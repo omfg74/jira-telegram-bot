@@ -1,0 +1,22 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:12.1
+    restart: always
+    command:
+      - '-c'
+      - 'shared_buffers=256MB'
+      - '-c'
+      - 'max_connections=200'
+    environment:
+      POSTGRES_DB: jira_bot
+      POSTGRES_USER: bot
+      POSTGRES_PASSWORD: bot
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ./src/main/resources/sql.init:/docker-entrypoint-initdb.d
+    ports:
+      - 5436:5432
+
+volumes:
+  postgresql_data:
