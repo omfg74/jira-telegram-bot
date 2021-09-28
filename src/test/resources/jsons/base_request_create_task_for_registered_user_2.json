@@ -1,0 +1,32 @@
+{
+  "update_id": 100,
+  "message": {
+    "chatId": 1000,
+    "reply": false,
+    "groupMessage": false,
+    "userMessage": true,
+    "channelMessage": false,
+    "superGroupMessage": false,
+    "command": false,
+    "message_id": 73,
+    "from": {
+      "bot": false,
+      "id": 4444,
+      "first_name": "Registered_user",
+      "is_bot": false,
+      "language_code": "ru"
+    },
+    "date": 1632601604,
+    "chat": {
+      "groupChat": false,
+      "userChat": true,
+      "channelChat": false,
+      "superGroupChat": false,
+      "id": 1000,
+      "type": "private",
+      "first_name": "Registered_user"
+    },
+    "text": "sample_text",
+    "new_chat_members": []
+  }
+}

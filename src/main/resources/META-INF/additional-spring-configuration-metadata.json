@@ -14,5 +14,10 @@
       "name": "app.telegrambot.token",
       "type": "java.lang.String",
       "description": "telegrambot.token."
+    },
+    {
+      "name": "app.webhook.address",
+      "type": "java.lang.String",
+      "description": "Telegram Webhook address."
     }
   ] }

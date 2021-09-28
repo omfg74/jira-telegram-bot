@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'groovy'
 }
 
 group = 'com.omfgdevelop'
@@ -19,16 +20,61 @@ repositories {
 }
 
 dependencies {
+	//Springboot
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	implementation 'org.springframework:spring-aop'
+
+	//Telegram bots
+	implementation 'org.telegram:telegrambots-spring-boot-starter:4.4.0.2'
+
+	//Lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//Database
+	runtimeOnly 'org.postgresql:postgresql'
+
+	//Metrics
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.5.4'
+	implementation 'io.micrometer:micrometer-registry-prometheus:1.7.4'
+	implementation 'org.springframework.metrics:spring-metrics:0.5.1.RELEASE'
+
+	//Logging
+	implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+	implementation 'co.elastic.apm:apm-agent-api:1.15.0'
+	implementation 'co.elastic.logging:log4j2-ecs-layout:0.3.0'
+	implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+
+	//Mapping
+	implementation 'org.mapstruct:mapstruct:1.3.1.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.1.Final'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.5'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
+
+
+	//IO
+	implementation 'org.apache.commons:commons-io:1.3.2'
+
+
+
+	//Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+	testImplementation 'org.spockframework:spock-spring:2.0-groovy-3.0'
+	testImplementation 'org.testcontainers:postgresql:1.15.2'
+	testImplementation 'org.hamcrest:hamcrest:2.2'
+	testImplementation 'org.apache.commons:commons-io:1.3.2'
+
+
+
 }
 
 test {

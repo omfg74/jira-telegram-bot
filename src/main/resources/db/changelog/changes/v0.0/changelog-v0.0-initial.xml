@@ -1,56 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog libs/dbchangelog-3.1.xsd">
-	<changeSet id="backend db initialization" author="a.podshivalov">
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog libs/dbchangelog-3.1.xsd">
+    <changeSet id="backend db initialization" author="a.podshivalov">
 
-		<sql>
-			create table users
-			(
-			id int,
-			telegram_id int,
-			username text,
-			password int
-			);
+        <sql>
+            create table users
+            (
+            id bigserial
+            not null
+            constraint users_pk
+            primary key,
+            telegram_id int,
+            telegram_username text,
+            jira_username text,
+            jira_password text
+            );
 
-			comment on column users.telegram_id is 'Telegram Id
-			';
+            comment on column users.telegram_id is 'Telegram Id
+            ';
 
-			comment on column users.username is 'Jira username';
+            comment on column users.jira_username is 'Jira username';
 
-			comment on column users.password is 'Jira password';
-
-
-			create table tasks_queue
-			(
-			id int,
-			task_type int,
-			telegram_id int,
-			params text,
-			status int
-			);
-
-			comment on column tasks_queue.task_type is 'Type of task to call
-			';
-
-			comment on column tasks_queue.telegram_id is 'Telegram user id
-			';
-
-			comment on column tasks_queue.params is 'Task params to call';
-
-			comment on column tasks_queue.status is 'Task current status
-			0 - created
-			1 - processing
-			2 - error
-			3 - done';
-
-			create table telegram_status
-			(
-			id int,
-			current_offset int
-			);
+            comment on column users.jira_password is 'Jira password';
 
 
-		</sql>
-	</changeSet>
+            create table tasks_queue
+            (
+            id bigserial
+            not null
+            constraint tasks_queue_pk primary key,
+            task_type int,
+            telegram_id int,
+            params text,
+            status int,
+            task_title text,
+            task_text text,
+            task_responsible text
+            );
+
+            comment on column tasks_queue.task_type is 'Type of task to call
+            ';
+
+            comment on column tasks_queue.telegram_id is 'Telegram user id
+            ';
+
+            comment on column tasks_queue.params is 'Task params to call';
+
+            comment on column tasks_queue.status is 'Task current status
+            0 - created
+            1 - processing
+            2 - error
+            3 - done';
+
+            create table telegram_status
+            (
+            id int,
+            current_offset int
+            );
+
+
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

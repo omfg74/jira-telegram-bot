@@ -1,0 +1,3 @@
+INSERT INTO public.users (id, telegram_id, telegram_username, jira_username, jira_password) VALUES (1000, 3333, 'telegram_user_test', 'jira_user_test', null);
+INSERT INTO public.users (id, telegram_id, telegram_username, jira_username, jira_password) VALUES (1001, 4444, 'Registered_user', 'Registered_jira_user', '123');
+INSERT INTO public.users (id, telegram_id, telegram_username, jira_username, jira_password) VALUES (1002, 4445, 'Registered_user_SecondUser', 'Registered_jira_user_SecondUser', '123');
