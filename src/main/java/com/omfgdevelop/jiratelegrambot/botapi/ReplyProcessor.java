@@ -1,6 +1,7 @@
 package com.omfgdevelop.jiratelegrambot.botapi;
 
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
+import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,8 +25,11 @@ public class ReplyProcessor {
         try {
             MessageHandler currentHandler = messageHandlers.get(userState);
             return currentHandler.handleInputMessage(message);
-        }catch (Exception e){
-            return new SendMessage(message.getChatId(),"Unsupported command");
+        } catch (Exception e) {
+            if (!userState.equals(UserState.NEW_JIRA_PASSWORD)) {
+                log.error(new EcsEvent("Error").with(e).withContext("id", message.getFrom().getId()).withContext("text", message.getText()));
+            }
+            return new SendMessage(message.getChatId(), "Unsupported command");
         }
     }
 }

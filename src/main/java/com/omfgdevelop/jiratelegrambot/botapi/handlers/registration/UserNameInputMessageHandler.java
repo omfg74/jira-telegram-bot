@@ -20,7 +20,7 @@ public class UserNameInputMessageHandler implements MessageHandler {
 
     @Override
     public SendMessage handleInputMessage(Message message) {
-        User exists = userService.getUserByUserId(message.getFrom().getId());
+        User exists = userService.getUserByUserId((long)message.getFrom().getId());
         SendMessage sendMessage = new SendMessage();
         if (exists == null) {
             User user = new User();

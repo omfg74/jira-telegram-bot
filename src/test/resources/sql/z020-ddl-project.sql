@@ -1,0 +1,1 @@
+INSERT INTO public.jira_project (id, expand, self, key, name, project_key) VALUES ('10000', 'description,lead,url,projectKeys', 'http://192.168.22.37:8080/rest/api/2/project/10000', 'BOT', 'BotDevelop', 'software');

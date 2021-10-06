@@ -1,6 +1,7 @@
 package com.omfgdevelop.jiratelegrambot.botapi;
 
 import com.omfgdevelop.jiratelegrambot.service.TelegramMessageProcessor;
+import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -11,6 +12,15 @@ public class JiraBot extends TelegramWebhookBot {
 
     private final TelegramMessageProcessor telegramMessageProcessor;
 
+    @Value("${app.telegrambot.token}")
+    private String token;
+
+    @Value("${app.telegram.username}")
+    private String username;
+
+    @Value("${app.webhook.address}")
+    private String webhookAddress;
+
     public JiraBot(DefaultBotOptions options, TelegramMessageProcessor telegramMessageProcessor) {
         super(options);
         this.telegramMessageProcessor = telegramMessageProcessor;
@@ -18,12 +28,12 @@ public class JiraBot extends TelegramWebhookBot {
 
     @Override
     public String getBotUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public String getBotToken() {
-        return null;
+        return token;
     }
 
     @Override
@@ -34,6 +44,6 @@ public class JiraBot extends TelegramWebhookBot {
 
     @Override
     public String getBotPath() {
-        return null;
+        return webhookAddress;
     }
 }

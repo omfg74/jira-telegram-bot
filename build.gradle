@@ -62,7 +62,8 @@ dependencies {
 	//IO
 	implementation 'org.apache.commons:commons-io:1.3.2'
 
-
+	//jira
+//	compileOnly 'com.atlassian.jira:jira-api:7.0.0'
 
 	//Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

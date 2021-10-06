@@ -8,7 +8,8 @@ public enum UserState {
     NEW_JIRA_PASSWORD(4),
     CANCELLING_CURRENT_TASK(5),
     CREATING_NEW_TASK(6),
-    STAND_BY(7);
+    STAND_BY(7),
+    PROJECT_SELECT(8);
 
     private final Integer value;
 

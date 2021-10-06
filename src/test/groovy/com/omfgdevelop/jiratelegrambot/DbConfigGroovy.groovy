@@ -26,10 +26,6 @@ import java.time.Duration
  * TestContainers config
  */
 @Configuration
-@SpringBootTest
-@EnableWebSecurity
-@EnableJpaRepositories(value = "com.omfgdevelop.jiratelegrambot.repository")
-@EntityScan(value = "com.omfgdevelop.jiratelegrambot.entity")
 @ComponentScan(basePackages = ["com.omfgdevelop.jiratelegrambot"])
 class DbConfigGroovy {
 

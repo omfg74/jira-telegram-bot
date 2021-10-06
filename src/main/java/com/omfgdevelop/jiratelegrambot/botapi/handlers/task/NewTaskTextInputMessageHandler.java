@@ -1,17 +1,24 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.task;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
 import com.omfgdevelop.jiratelegrambot.entity.Task;
+import com.omfgdevelop.jiratelegrambot.exception.IssueCreateException;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
+import com.omfgdevelop.jiratelegrambot.service.jira.JiraIssueService;
+import com.omfgdevelop.jiratelegrambot.view.jira.issue.IssueResponse;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class NewTaskTextInputMessageHandler implements MessageHandler {
 
     private final TaskService taskService;

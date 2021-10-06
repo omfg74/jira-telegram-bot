@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "tasks_queue")
 public class Task {
 
@@ -38,6 +39,9 @@ public class Task {
 
     @Column(name = "task_responsible")
     private String TaskResponsible;
+
+    @Column(name = "project")
+    private String project;
 
 
 }

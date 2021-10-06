@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../../../libs/dbchangelog-3.1.xsd">
+    <changeSet id="changelog_v0.0_jira_project.xml" author="a.podshivalov">
+
+        <sql>
+            create table jira_project
+            (
+            id text not null
+            constraint jira_project_pk
+            primary key,
+            expand text,
+            self text,
+            key text,
+            name text,
+            project_key text
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -2,8 +2,11 @@
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog libs/dbchangelog-3.6.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../libs/dbchangelog-3.6.xsd">
 
     <include file="changes/v0.0/changelog-v0.0-initial.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0/changelog_jira_base_setup.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0/changelog_v0.0_jira_project.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0/010-ddl-task_queue.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

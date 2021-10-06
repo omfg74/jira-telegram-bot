@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.service;
 
+import com.omfgdevelop.jiratelegrambot.botapi.QueryProcessor;
 import com.omfgdevelop.jiratelegrambot.botapi.ReplyProcessor;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import static com.omfgdevelop.jiratelegrambot.botapi.UserState.STAND_BY;
 
 @Service
 @Log4j2
@@ -21,12 +24,21 @@ public class TelegramMessageProcessor {
 
     private final ReplyProcessor replyProcessor;
 
+    private final QueryProcessor queryProcessor;
+
     public SendMessage handleMessage(Update update) {
         SendMessage replyMessage = null;
 
         if (update.hasCallbackQuery()) {
+            Long userId = (long) update.getCallbackQuery().getFrom().getId();
+            switch (userStateCache.getCurrentUserState(userId)) {
+                case PROJECT_SELECT:
+                    return queryProcessor.processQuery(userStateCache.getCurrentUserState(userId), update);
+                default:
+                    userStateCache.setCurrentUserState(userId, STAND_BY);
+            }
             log.info("New query from user: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(), update.getCallbackQuery().getData());
-            return new SendMessage(update.getCallbackQuery().getFrom().getUserName(), "CallBAckquerry not supporting");
+            return new SendMessage(update.getCallbackQuery().getMessage().getChatId(), "CallBAckquerry not supporting");
         }
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
@@ -64,4 +76,12 @@ public class TelegramMessageProcessor {
         return replyMessage;
     }
 
+    boolean isWaitingForQuery(UserState userState) {
+        switch (userState) {
+            case PROJECT_SELECT:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

@@ -24,7 +24,7 @@ public class UserService {
         return user.isPresent();
     }
 
-    public User getUserByUserId(Integer id) {
+    public User getUserByUserId(Long id) {
         Optional<User> user = userRepository.findByTelegramId((long) id);
         return user.orElse(null);
     }
@@ -40,5 +40,9 @@ public class UserService {
         userToCreate.setJiraPassword(user.getJiraPassword() != null ? user.getJiraPassword() : userToCreate.getJiraPassword());
         userToCreate.setTelegramUsername(user.getTelegramUsername() != null ? user.getTelegramUsername() : userToCreate.getTelegramUsername());
         userRepository.save(userToCreate);
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 }
