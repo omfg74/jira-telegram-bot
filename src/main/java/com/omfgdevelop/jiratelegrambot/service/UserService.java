@@ -3,8 +3,12 @@ package com.omfgdevelop.jiratelegrambot.service;
 import com.omfgdevelop.jiratelegrambot.entity.User;
 import com.omfgdevelop.jiratelegrambot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.security.InvalidKeyException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +19,8 @@ public class UserService {
     private final Set<Long> registeredIds;
 
     private final UserRepository userRepository;
+
+    private final EncryptionService encryptionService;
 
     public Boolean checkIfRegistered(long userId) {
         if (registeredIds.contains(userId)) {
@@ -29,7 +35,7 @@ public class UserService {
         return user.orElse(null);
     }
 
-    public void createOrUpdate(User user) {
+    public void createOrUpdate(User user) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         Optional<User> entity = userRepository.findByTelegramId(user.getTelegramId());
         User userToCreate = new User();
         if (entity.isPresent()) {
@@ -37,7 +43,7 @@ public class UserService {
         }
         userToCreate.setJiraUsername(user.getJiraUsername() != null ? user.getJiraUsername() : userToCreate.getJiraUsername());
         userToCreate.setTelegramId(user.getTelegramId() != null ? user.getTelegramId() : userToCreate.getTelegramId());
-        userToCreate.setJiraPassword(user.getJiraPassword() != null ? user.getJiraPassword() : userToCreate.getJiraPassword());
+        userToCreate.setJiraPassword(user.getJiraPassword() != null ? encryptionService.encrypt(user.getJiraPassword()) :userToCreate.getJiraPassword());
         userToCreate.setTelegramUsername(user.getTelegramUsername() != null ? user.getTelegramUsername() : userToCreate.getTelegramUsername());
         userRepository.save(userToCreate);
     }
@@ -45,4 +51,6 @@ public class UserService {
     public void updateUser(User user) {
         userRepository.save(user);
     }
+
+
 }

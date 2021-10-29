@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,5 +28,8 @@ public interface TaskQueueRepository extends JpaRepository<Task, Long> {
 
 
     Optional<Task> findTaskByTelegramIdAndTaskTitleAndStatus(Long telegramId, String taskTitle, Integer status);
+
+    @Query(value = "select * from tasks_queue t where t.status=0", nativeQuery = true)
+    List<Task> findAllCreatedTasks();
 
 }

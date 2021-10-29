@@ -1,7 +1,7 @@
-package com.omfgdevelop.jiratelegrambot.profiles;
+package com.omfgdevelop.jiratelegrambot.job;
 
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
-import com.omfgdevelop.jiratelegrambot.job.JiraProjectFetchJob;
+import com.omfgdevelop.jiratelegrambot.service.JiraProjectFetchJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +28,7 @@ public class JiraDataUpdateService {
     @Scheduled(fixedDelayString = "${jira.update.delay}", initialDelay = 0)
     public void process() {
         try {
+            log.info(new EcsEvent("Projects list update started"));
             projectService.getJiraProfiles(adminUsername, adminPassword);
         } catch (Exception e) {
             log.error(new EcsEvent("Update project list").with(e));

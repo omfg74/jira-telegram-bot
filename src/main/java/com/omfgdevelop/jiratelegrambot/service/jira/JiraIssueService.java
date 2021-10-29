@@ -4,24 +4,38 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omfgdevelop.jiratelegrambot.entity.Task;
 import com.omfgdevelop.jiratelegrambot.entity.User;
+import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.exception.IssueCreateException;
+import com.omfgdevelop.jiratelegrambot.service.EncryptionService;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
 import com.omfgdevelop.jiratelegrambot.view.jira.issue.*;
 import com.omfgdevelop.jiratelegrambot.view.jira.prject.Project;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.security.InvalidKeyException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import static com.omfgdevelop.jiratelegrambot.Common.createHeaders;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class JiraIssueService {
 
     public final UserService userService;
@@ -37,18 +51,31 @@ public class JiraIssueService {
 
     private final TaskService taskService;
 
+    @Value("${app.telegrambot.token}")
+    private final String botToken;
 
-    public IssueResponse createIssue(Long telegramId, String taskTitle) throws JsonProcessingException, NotFoundException, IssueCreateException {
-        User user = userService.getUserByUserId(telegramId);
-        Task task = taskService.getCreatedTaskByTelegramIdAndTitle(telegramId, taskTitle);
+    @Value("${app.telegrambot.url}")
+    private final String botUrl;
 
-        HttpHeaders headers = createHeaders(user.getJiraUsername(), user.getJiraPassword());
+    private final LinkedBlockingDeque<Task> queue;
+
+    private final EncryptionService encryptionService;
+
+    @Value("${app.reply.url}")
+    private final String replyLink;
+
+
+    public IssueResponse createIssue(Task task) throws JsonProcessingException, NotFoundException, IssueCreateException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
+        User user = userService.getUserByUserId(task.getTelegramId());
+
+        HttpHeaders headers = createHeaders(user.getJiraUsername(), encryptionService.decrypt(user.getJiraPassword()));
 
         Issuetype issuetype = new Issuetype();
-        issuetype.setName("Bug");
+        issuetype.setName("Task");
+        log.info(new EcsEvent("Username_password").withContext("username",user.getJiraUsername()).withContext("password",encryptionService.decrypt(user.getJiraPassword())));
 
         Project project = new Project();
-        project.setKey("BOT");
+        project.setKey(task.getProject());
 
         Fields fields = new Fields();
         fields.setSummary(task.getTaskTitle());
@@ -60,14 +87,69 @@ public class JiraIssueService {
         issue.setFields(fields);
 
         HttpEntity<Issue> request = new HttpEntity<>(issue, headers);
+        log.info(new EcsEvent("ISSUE URL").withContext("url",baseUrl + apiUrl + "/issue").withContext("headers",headers.toString()));
         ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + apiUrl + "/issue", request, String.class);
 
         if (response.getStatusCode().value() == 201) {
             taskService.markTaskAsDone(task);
             return objectMapper.readValue(response.getBody(), IssueResponse.class);
+        }else if (response.getStatusCode().value()==404){
+            log.error(new EcsEvent("Error 404 on issue create").withContext("response",response));
         }
         throw new IssueCreateException("Failed to create issue");
 
     }
 
+    public void processCreation() {
+
+        queue.addAll(taskService.getAllCreatedTasks());
+        for (Task task : queue) {
+            try {
+                log.info(new EcsEvent("Task updating").withContext("task", task.getTaskTitle()));
+                taskService.markTaskAsProcessed(task);
+                IssueResponse response = createIssue(task);
+                Map<String, String> params = new HashMap<>();
+
+                params.put("text", "Your_task_is_done_link_is "+replyLink + response.getKey());
+                params.put("chat_id", task.getTelegramId().toString());
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(botUrl + botToken + "/sendMessage");
+                log.info(new EcsEvent("Issue create url ").withContext("url", builder.build()));
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    builder.queryParam(entry.getKey(), entry.getValue());
+                }
+                HttpHeaders headers = new HttpHeaders();
+                log.info(new EcsEvent("ISSUE CREATED URL").withContext("url",builder.toUriString()).withContext("headers",headers.toString()));
+                ResponseEntity<String> responseIssue = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity(headers), String.class);
+                if (responseIssue.getStatusCode().value() == 200) {
+                    taskService.markTaskAsDone(task);
+                    log.info(new EcsEvent("Task is done and sent to user").withContext("task_id",task.getId()).withContext("task_title",task.getTaskTitle()));
+                }
+                if (responseIssue.getStatusCode().value() == 404) {
+                    log.info(new EcsEvent("Response 404").withContext("resp", response));
+                }
+                log.info(new EcsEvent("Response").withContext("resp", response));
+                queue.remove(task);
+            } catch (Exception e) {
+                e.printStackTrace();
+                queue.remove(task);
+                taskService.markTaskAsError(task);
+                log.error(new EcsEvent("Error creating issue error").with(e).withContext("task", task.getTaskTitle()).withContext("task", task.getId()));
+                sendErrorMessage(task);
+            }
+        }
+    }
+
+    private void sendErrorMessage(Task task) {
+        Map<String, String> params = new HashMap<>();
+        taskService.markTaskAsError(task);
+        params.put("text", "Error creating " + task.getTaskTitle() + " ");
+        params.put("chat_id", task.getTelegramId().toString());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(botUrl + botToken + "/sendMessage");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            builder.queryParam(entry.getKey(), entry.getValue());
+        }
+        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Accept", "application/json");
+        restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity(headers), String.class);
+    }
 }

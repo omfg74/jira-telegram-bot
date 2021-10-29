@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.security.auth.login.FailedLoginException;
 import javax.ws.rs.core.NoContentException;
+import java.security.InvalidKeyException;
 import java.util.Set;
 
 import static com.omfgdevelop.jiratelegrambot.config.AppConfig.REGISTERED_USER_SET;
@@ -40,7 +43,11 @@ public class PasswordInputMessageHandler implements MessageHandler {
             User user = new User();
             user.setTelegramId((long) message.getFrom().getId());
             user.setJiraPassword(message.getText());
-            userService.createOrUpdate(user);
+            try {
+                userService.createOrUpdate(user);
+            } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+                return new SendMessage(message.getChatId(), "Password encrypt error");
+            }
 
             try {
                 jiraLoginService.getMyself(exists.getTelegramId());

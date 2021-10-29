@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.security.InvalidKeyException;
+
 @Component
 @RequiredArgsConstructor
 public class UserNameInputMessageHandler implements MessageHandler {
@@ -19,7 +23,7 @@ public class UserNameInputMessageHandler implements MessageHandler {
     private final UserStateCache userStateCache;
 
     @Override
-    public SendMessage handleInputMessage(Message message) {
+    public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         User exists = userService.getUserByUserId((long)message.getFrom().getId());
         SendMessage sendMessage = new SendMessage();
         if (exists == null) {

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class JiraBotConfig {
 
     @Value("${app.webhook.address}")
-    private String wbeHookPath;
+    private String webHookPath;
     @Value("${app.telegrambot.token}")
     private String botToken;
     @Value("${app.telegram.username}")

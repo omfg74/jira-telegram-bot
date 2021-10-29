@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.omfgdevelop.jiratelegrambot.enums.TaskStatus.CREATED;
@@ -94,7 +95,7 @@ public class TaskService {
         if (taskOptional.isPresent()) {
             Task taskToUpdate = taskOptional.get();
             taskToUpdate.setStatus(DONE.getValue());
-            taskQueueRepository.save(task);
+            taskQueueRepository.save(taskToUpdate);
         }
     }
 
@@ -108,5 +109,19 @@ public class TaskService {
             task.setTaskText(task.getTaskText() != null ? task.getTaskText() : taskOptional.get().getTaskText());
             taskQueueRepository.save(task);
         }
+    }
+
+    public List<Task> getAllCreatedTasks() {
+        return taskQueueRepository.findAllCreatedTasks();
+    }
+
+    public void markTaskAsError(Task task) {
+        task.setStatus(TaskStatus.ERROR.getValue());
+        taskQueueRepository.save(task);
+    }
+
+    public void markTaskAsProcessed(Task task) {
+        task.setStatus(TaskStatus.PROCESSING.getValue());
+        taskQueueRepository.save(task);
     }
 }
