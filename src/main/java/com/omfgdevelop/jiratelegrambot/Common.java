@@ -32,18 +32,18 @@ public class Common {
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
         for (int i = 0; i < projectList.size(); i++) {
+            if (i % 2 == 0) {
+                keyboard.add(row);
+                row = new ArrayList<>();
+            }
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText(projectList.get(i).getName());
             inlineKeyboardButton.setCallbackData(task.getTaskTitle() + "/" + projectList.get(i).getKey());
             row.add(inlineKeyboardButton);
-//            if (i % 3 == 0) {
-//                row = new ArrayList<>();
-//            }
         }
         keyboard.add(row);
 
-
         markup.setKeyboard(keyboard);
-        return new SendMessage().setText(String.format("Select project for task named %s", task.getTaskTitle())).setChatId(message.getChatId()).setReplyMarkup(markup);
+        return new SendMessage().setText(String.format("К какому проекту добавить задачу %s?", task.getTaskTitle())).setChatId(message.getChatId()).setReplyMarkup(markup);
     }
 }

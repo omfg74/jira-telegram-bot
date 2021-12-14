@@ -1,0 +1,8 @@
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (39, null, 123456, null, 3, 'Название', 'Задача', null, 'BOT');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (40, null, 123456, null, 1, 'Тест...', 'Задача', null, 'BOT');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (38, null, 123456, null, 1, 'Тц', 'Ооор', null, 'BOT');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (41, null, 123456, null, 2, 'hfdsajlfhdjsalf', 'fljdlafhjkdlaf', null, 'SPRIN');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (42, null, 123456, null, 3, 'jrjdjasdioasa', 'ds;dajsfkl;dasj', null, 'SPRIN');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (43, null, 123456, null, 6, 'Ьвьсьсьсбдч', 'Чттчьчьсьс', null, 'SPRIN');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (44, null, 123456, null, 5, 'dsadada', 'dasdasda', null, 'SPRIN');
+INSERT INTO public.tasks_queue (id, task_type, telegram_id, params, status, task_title, task_text, task_responsible, project) VALUES (37, null, 123456, null, 4, 'Тест', 'Сттсьсь', null, 'BOT');

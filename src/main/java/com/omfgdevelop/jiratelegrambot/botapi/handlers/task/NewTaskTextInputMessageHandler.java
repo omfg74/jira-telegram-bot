@@ -30,7 +30,7 @@ public class NewTaskTextInputMessageHandler implements MessageHandler {
         Task task = taskService.inputTaskText(message);
         userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
         if (task != null) {
-            return new SendMessage(message.getChatId(), String.format("To task with title %s added text %s", task.getTaskTitle(), task.getTaskText()));
+            return new SendMessage(message.getChatId(), String.format("Добавлена задача %s\nс описанием:\n%s", task.getTaskTitle(), task.getTaskText()));
         }
         return new SendMessage(message.getChatId(), "Something wrong you have no pending tasks");
     }

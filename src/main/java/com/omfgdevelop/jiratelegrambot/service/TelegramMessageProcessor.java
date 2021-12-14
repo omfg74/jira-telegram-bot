@@ -37,12 +37,12 @@ public class TelegramMessageProcessor {
                 default:
                     userStateCache.setCurrentUserState(userId, STAND_BY);
             }
-            log.info("New query from user: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(), update.getCallbackQuery().getData());
-            return new SendMessage(update.getCallbackQuery().getMessage().getChatId(), "CallBAckquerry not supporting");
+            log.debug("New query from user: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(), update.getCallbackQuery().getData());
+            return new SendMessage(update.getCallbackQuery().getMessage().getChatId(), "CallBackquerry not supporting");
         }
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
-            log.info("New message from User:{}, chatId: {},  with text: {}",
+            log.debug("New message from User:{}, chatId: {},  with text: {}",
                     message.getFrom().getUserName(), message.getChatId(), message.getText());
             replyMessage = handleInputMessage(message);
         }

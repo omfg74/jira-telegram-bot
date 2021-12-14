@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,5 +124,10 @@ public class TaskService {
     public void markTaskAsProcessed(Task task) {
         task.setStatus(TaskStatus.PROCESSING.getValue());
         taskQueueRepository.save(task);
+    }
+
+    @Transactional
+    public void dropAllPendingTasks(Integer id){
+        taskQueueRepository.deleteAllUncompleted(id);
     }
 }

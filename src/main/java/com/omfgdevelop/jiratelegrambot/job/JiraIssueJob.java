@@ -23,8 +23,8 @@ public class JiraIssueJob {
 
     @Scheduled(fixedDelayString = "${jira.issue.create.delay}", initialDelay = 0)
     public void process() {
-        log.info(new EcsEvent("Issue Job started"));
+        log.debug(new EcsEvent("Issue Job started"));
         jiraIssueService.processCreation();
-        log.info(new EcsEvent("Issue Job finished"));
+        log.debug(new EcsEvent("Issue Job finished"));
     }
 }

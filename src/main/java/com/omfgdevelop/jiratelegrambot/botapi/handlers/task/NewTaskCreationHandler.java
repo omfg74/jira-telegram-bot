@@ -6,10 +6,12 @@ import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
 import com.omfgdevelop.jiratelegrambot.entity.Task;
 import com.omfgdevelop.jiratelegrambot.entity.User;
 import com.omfgdevelop.jiratelegrambot.enums.TaskStatus;
+import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
 import com.omfgdevelop.jiratelegrambot.service.jira.JiraProjectService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -18,6 +20,7 @@ import static com.omfgdevelop.jiratelegrambot.Common.createProjectMenu;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class NewTaskCreationHandler implements MessageHandler {
 
     private final UserService userService;
@@ -42,23 +45,24 @@ public class NewTaskCreationHandler implements MessageHandler {
             taskService.insertTask(createdTask);
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
             if (user != null) {
-                return new SendMessage(message.getChatId(), String.format("Ready to create task for user %s.\nEnter task title", user.getJiraUsername()));
+                return new SendMessage(message.getChatId(), String.format("Новая задача\nавтор %s.\nПридумайте название.", user.getJiraUsername()));
             } else {
-                return new SendMessage(message.getChatId(), String.format("no user found by userId %s", message.getFrom().getId()));
+                return new SendMessage(message.getChatId(), String.format("Такого пользователя нет.\nЗарегистрируйтесь. %s", message.getFrom().getId()));
             }
         } else {
             switch (task.getStatus()) {
                 case 4:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
-                    return new SendMessage(message.getChatId(), "You have started task in status input title");
+                    return new SendMessage(message.getChatId(), "У вас есть не завершенная задача.\nВведите название для нее.");
                 case 5:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TEXT);
-                    return new SendMessage(message.getChatId(), "You have started task in status input text");
+                    return new SendMessage(message.getChatId(), "У вас есть незаконченная задача. Осталось ввести описание для нее.");
                 case 6:
                     userStateCache.setCurrentUserState(message.getFrom().getId(),UserState.PROJECT_SELECT);
                     return createProjectMenu(message, task,projectService);
             }
         }
+        log.error(new EcsEvent("Unexpected error while handling case").withContext("case",task.getStatus()));
         return new SendMessage(message.getChatId(), "Unexpected error");
 
     }

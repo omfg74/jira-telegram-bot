@@ -72,7 +72,7 @@ public class JiraIssueService {
 
         Issuetype issuetype = new Issuetype();
         issuetype.setName("Task");
-        log.info(new EcsEvent("Username_password").withContext("username",user.getJiraUsername()).withContext("password",encryptionService.decrypt(user.getJiraPassword())));
+        log.debug(new EcsEvent("Username_password").withContext("username",user.getJiraUsername()).withContext("password",encryptionService.decrypt(user.getJiraPassword())));
 
         Project project = new Project();
         project.setKey(task.getProject());
@@ -87,7 +87,7 @@ public class JiraIssueService {
         issue.setFields(fields);
 
         HttpEntity<Issue> request = new HttpEntity<>(issue, headers);
-        log.info(new EcsEvent("ISSUE URL").withContext("url",baseUrl + apiUrl + "/issue").withContext("headers",headers.toString()));
+        log.debug(new EcsEvent("ISSUE URL").withContext("url",baseUrl + apiUrl + "/issue").withContext("headers",headers.toString()));
         ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + apiUrl + "/issue", request, String.class);
 
         if (response.getStatusCode().value() == 201) {
@@ -105,29 +105,35 @@ public class JiraIssueService {
         queue.addAll(taskService.getAllCreatedTasks());
         for (Task task : queue) {
             try {
-                log.info(new EcsEvent("Task updating").withContext("task", task.getTaskTitle()));
+                log.debug(new EcsEvent("Task updating").withContext("task", task.getTaskTitle()));
                 taskService.markTaskAsProcessed(task);
                 IssueResponse response = createIssue(task);
                 Map<String, String> params = new HashMap<>();
 
-                params.put("text", "Your_task_is_done_link_is "+replyLink + response.getKey());
+                params.put("text", "Your+task+is+done+"+replyLink + response.getKey());
                 params.put("chat_id", task.getTelegramId().toString());
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(botUrl + botToken + "/sendMessage");
-                log.info(new EcsEvent("Issue create url ").withContext("url", builder.build()));
+
+
+                log.debug(new EcsEvent("Issue create url ").withContext("url", builder.build()));
+
                 for (Map.Entry<String, String> entry : params.entrySet()) {
                     builder.queryParam(entry.getKey(), entry.getValue());
                 }
                 HttpHeaders headers = new HttpHeaders();
-                log.info(new EcsEvent("ISSUE CREATED URL").withContext("url",builder.toUriString()).withContext("headers",headers.toString()));
+
+                log.debug(new EcsEvent("ISSUE CREATED URL").withContext("url",builder.toUriString()).withContext("headers",headers.toString()));
+
                 ResponseEntity<String> responseIssue = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity(headers), String.class);
+
                 if (responseIssue.getStatusCode().value() == 200) {
                     taskService.markTaskAsDone(task);
-                    log.info(new EcsEvent("Task is done and sent to user").withContext("task_id",task.getId()).withContext("task_title",task.getTaskTitle()));
+                    log.debug(new EcsEvent("Task is done and sent to user").withContext("task_id",task.getId()).withContext("task_title",task.getTaskTitle()));
                 }
                 if (responseIssue.getStatusCode().value() == 404) {
-                    log.info(new EcsEvent("Response 404").withContext("resp", response));
+                    log.error(new EcsEvent("Response 404").withContext("resp", response));
                 }
-                log.info(new EcsEvent("Response").withContext("resp", response));
+                log.debug(new EcsEvent("Response").withContext("resp", response));
                 queue.remove(task);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -28,7 +28,7 @@ public class JiraDataUpdateService {
     @Scheduled(fixedDelayString = "${jira.update.delay}", initialDelay = 0)
     public void process() {
         try {
-            log.info(new EcsEvent("Projects list update started"));
+            log.debug(new EcsEvent("Projects list update started"));
             projectService.getJiraProfiles(adminUsername, adminPassword);
         } catch (Exception e) {
             log.error(new EcsEvent("Update project list").with(e));

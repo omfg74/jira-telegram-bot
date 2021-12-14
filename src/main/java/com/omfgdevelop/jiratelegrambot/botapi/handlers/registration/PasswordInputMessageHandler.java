@@ -4,9 +4,11 @@ import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
 import com.omfgdevelop.jiratelegrambot.entity.User;
+import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.service.jira.JiraLoginService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,6 +25,7 @@ import static com.omfgdevelop.jiratelegrambot.config.AppConfig.REGISTERED_USER_S
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class PasswordInputMessageHandler implements MessageHandler {
 
     private final UserService userService;
@@ -65,7 +68,8 @@ public class PasswordInputMessageHandler implements MessageHandler {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
         } else {
             sendMessage.setChatId(message.getChatId());
-            sendMessage.setText("User not found");
+            sendMessage.setText("Пользователь не найден");
+            log.error(new EcsEvent("User not found").withContext("user_id",message.getChat()));
         }
         return sendMessage;
     }

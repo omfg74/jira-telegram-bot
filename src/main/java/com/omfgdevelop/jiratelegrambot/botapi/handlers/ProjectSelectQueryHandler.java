@@ -42,7 +42,7 @@ public class ProjectSelectQueryHandler implements CallBackQueryHandler {
             return new SendMessage(callbackQuery.getMessage().getChatId(),"Error finding current task");
         }
         userStateCache.setCurrentUserState(callbackQuery.getFrom().getId(), UserState.NEW_TASK_TEXT);
-        return new SendMessage(callbackQuery.getMessage().getChatId(), String.format("Task with name %s is assigned to project %s\n now input task summary",
+        return new SendMessage(callbackQuery.getMessage().getChatId(), String.format("Задача %s добавлена к проекту %s.\nДобавьте описание задачи",
                 task != null ? task.getTaskTitle() : null, task != null ? task.getProject() : null));
     }
 

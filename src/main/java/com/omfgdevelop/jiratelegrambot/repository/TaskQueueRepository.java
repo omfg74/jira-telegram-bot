@@ -3,6 +3,7 @@ package com.omfgdevelop.jiratelegrambot.repository;
 import com.omfgdevelop.jiratelegrambot.entity.Task;
 import com.omfgdevelop.jiratelegrambot.enums.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -32,4 +33,9 @@ public interface TaskQueueRepository extends JpaRepository<Task, Long> {
     @Query(value = "select * from tasks_queue t where t.status=0", nativeQuery = true)
     List<Task> findAllCreatedTasks();
 
+    @Query(value = "delete from tasks_queue t where t.telegram_id =?1 and (t.status=4 or t.status=5 or t.status=6)", nativeQuery = true)
+    @Modifying
+    void deleteAllUncompleted(Integer id);
+
+    List<Task> findAllByTelegramId(Long telegramId);
 }
