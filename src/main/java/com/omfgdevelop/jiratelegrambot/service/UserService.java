@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.transaction.Transactional;
 import java.security.InvalidKeyException;
 import java.util.Optional;
 import java.util.Set;
@@ -53,4 +54,8 @@ public class UserService {
     }
 
 
+    @Transactional
+    public void deleteUser(Long chatId) {
+        userRepository.deleteByTelegramId(chatId);
+    }
 }

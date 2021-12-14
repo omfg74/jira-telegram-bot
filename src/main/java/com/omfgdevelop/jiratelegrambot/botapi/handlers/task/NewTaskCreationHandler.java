@@ -53,7 +53,7 @@ public class NewTaskCreationHandler implements MessageHandler {
             switch (task.getStatus()) {
                 case 4:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
-                    return new SendMessage(message.getChatId(), "У вас есть не завершенная задача.\nВведите название для нее.");
+                    return new SendMessage(message.getChatId(), "У вас есть незавершенная задача.\nВведите название для нее.");
                 case 5:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TEXT);
                     return new SendMessage(message.getChatId(), "У вас есть незаконченная задача. Осталось ввести описание для нее.");

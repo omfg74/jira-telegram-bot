@@ -33,7 +33,7 @@ public class UserNameInputMessageHandler implements MessageHandler {
             user.setTelegramUsername(message.getFrom().getFirstName());
             userService.createOrUpdate(user);
             sendMessage.setChatId(message.getChatId());
-            sendMessage.setText(String.format("User %s username added. Enter Jira password. It will be stored safely", message.getText()));
+            sendMessage.setText(String.format("Добавлен пользователь %s. Введите пароль. Он будет храниться в зашифрованном виде.", message.getText()));
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
         } else {
             sendMessage.setChatId(message.getChatId());

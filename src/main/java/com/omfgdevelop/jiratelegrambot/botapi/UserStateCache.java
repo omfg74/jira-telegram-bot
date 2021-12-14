@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,10 +28,15 @@ public class UserStateCache {
         UserState userState = userStates.get(userId);
         if (userState == null && !registeredUsersState.contains(userId)) {
             userState = UserState.UNREGISTERED;
-        } else if (userState == null&&registeredUsersState.contains(userId)) {
+        } else if (userState == null && registeredUsersState.contains(userId)) {
             userState = UserState.STAND_BY;
         }
         return userState;
+    }
+
+    public void removeIdFromCache(Long userId) {
+        userStates.remove(userId);
+        registeredUsersState.remove(userId);
     }
 
     public boolean isRegistered(long userId) {

@@ -9,7 +9,10 @@ public enum UserState {
     CANCELLING_CURRENT_TASK(5),
     CREATING_NEW_TASK(6),
     STAND_BY(7),
-    PROJECT_SELECT(8);
+    PROJECT_SELECT(8),
+    DELETE_REQUEST(10),
+    USER_DELETE_CONFIRM(11);
+
 
     private final Integer value;
 

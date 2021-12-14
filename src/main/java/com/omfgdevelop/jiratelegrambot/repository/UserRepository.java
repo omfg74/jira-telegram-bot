@@ -3,6 +3,7 @@ package com.omfgdevelop.jiratelegrambot.repository;
 import com.omfgdevelop.jiratelegrambot.entity.User;
 import org.checkerframework.common.util.report.qual.ReportUse;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select * from users where jira_username is not null and jira_password is not null ", nativeQuery = true)
     List<User> findAllWithUsernameNotNullAndPasswordNotNull();
+
+    @Modifying
+    void deleteByTelegramId(Long chatId);
 
 }

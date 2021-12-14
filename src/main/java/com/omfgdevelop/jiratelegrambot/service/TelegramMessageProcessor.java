@@ -64,6 +64,9 @@ public class TelegramMessageProcessor {
                 case "/cancel_current_task":
                     userState = UserState.CANCELLING_CURRENT_TASK;
                     break;
+                case "/delete_user":
+                    userState = UserState.DELETE_REQUEST;
+                    break;
                 default:
                     userState = userStateCache.getCurrentUserState(userId);
             }

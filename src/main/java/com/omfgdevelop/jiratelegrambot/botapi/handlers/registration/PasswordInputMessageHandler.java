@@ -63,7 +63,7 @@ public class PasswordInputMessageHandler implements MessageHandler {
             }
 
             sendMessage.setChatId(message.getChatId());
-            sendMessage.setText(String.format("Password set to user %s.", exists.getJiraUsername()));
+            sendMessage.setText(String.format("Пароль обновлен для пользователя %s.", exists.getJiraUsername()));
             registeredUserSet.add(Long.valueOf(message.getFrom().getId()));
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
         } else {
