@@ -9,7 +9,10 @@ import com.omfgdevelop.jiratelegrambot.exception.IssueCreateException;
 import com.omfgdevelop.jiratelegrambot.service.EncryptionService;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
-import com.omfgdevelop.jiratelegrambot.view.jira.issue.*;
+import com.omfgdevelop.jiratelegrambot.view.jira.issue.Fields;
+import com.omfgdevelop.jiratelegrambot.view.jira.issue.Issue;
+import com.omfgdevelop.jiratelegrambot.view.jira.issue.IssueResponse;
+import com.omfgdevelop.jiratelegrambot.view.jira.issue.Issuetype;
 import com.omfgdevelop.jiratelegrambot.view.jira.prject.Project;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.InvalidKeyException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -72,7 +74,7 @@ public class JiraIssueService {
 
         Issuetype issuetype = new Issuetype();
         issuetype.setName("Task");
-        log.debug(new EcsEvent("Username_password").withContext("username",user.getJiraUsername()).withContext("password",encryptionService.decrypt(user.getJiraPassword())));
+        log.debug(new EcsEvent("Username_password").withContext("username", user.getJiraUsername()).withContext("password", encryptionService.decrypt(user.getJiraPassword())));
 
         Project project = new Project();
         project.setKey(task.getProject());
@@ -87,14 +89,14 @@ public class JiraIssueService {
         issue.setFields(fields);
 
         HttpEntity<Issue> request = new HttpEntity<>(issue, headers);
-        log.debug(new EcsEvent("ISSUE URL").withContext("url",baseUrl + apiUrl + "/issue").withContext("headers",headers.toString()));
+        log.debug(new EcsEvent("ISSUE URL").withContext("url", baseUrl + apiUrl + "/issue").withContext("headers", headers.toString()));
         ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + apiUrl + "/issue", request, String.class);
 
         if (response.getStatusCode().value() == 201) {
             taskService.markTaskAsDone(task);
             return objectMapper.readValue(response.getBody(), IssueResponse.class);
-        }else if (response.getStatusCode().value()==404){
-            log.error(new EcsEvent("Error 404 on issue create").withContext("response",response));
+        } else if (response.getStatusCode().value() == 404) {
+            log.error(new EcsEvent("Error 404 on issue create").withContext("response", response));
         }
         throw new IssueCreateException("Failed to create issue");
 
@@ -110,7 +112,7 @@ public class JiraIssueService {
                 IssueResponse response = createIssue(task);
                 Map<String, String> params = new HashMap<>();
 
-                params.put("text", "Your+task+is+done+"+replyLink + response.getKey());
+                params.put("text", "Your+task+is+done+" + replyLink + response.getKey());
                 params.put("chat_id", task.getTelegramId().toString());
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(botUrl + botToken + "/sendMessage");
 
@@ -122,13 +124,13 @@ public class JiraIssueService {
                 }
                 HttpHeaders headers = new HttpHeaders();
 
-                log.debug(new EcsEvent("ISSUE CREATED URL").withContext("url",builder.toUriString()).withContext("headers",headers.toString()));
+                log.debug(new EcsEvent("ISSUE CREATED URL").withContext("url", builder.toUriString()).withContext("headers", headers.toString()));
 
                 ResponseEntity<String> responseIssue = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity(headers), String.class);
 
                 if (responseIssue.getStatusCode().value() == 200) {
                     taskService.markTaskAsDone(task);
-                    log.debug(new EcsEvent("Task is done and sent to user").withContext("task_id",task.getId()).withContext("task_title",task.getTaskTitle()));
+                    log.info(new EcsEvent("Task is done and sent to user").withContext("task_id", task.getId()).withContext("task_title", task.getTaskTitle()));
                 }
                 if (responseIssue.getStatusCode().value() == 404) {
                     log.error(new EcsEvent("Response 404").withContext("resp", response));
@@ -140,15 +142,15 @@ public class JiraIssueService {
                 queue.remove(task);
                 taskService.markTaskAsError(task);
                 log.error(new EcsEvent("Error creating issue error").with(e).withContext("task", task.getTaskTitle()).withContext("task", task.getId()));
-                sendErrorMessage(task);
+                sendErrorMessage(task, e);
             }
         }
     }
 
-    private void sendErrorMessage(Task task) {
+    private void sendErrorMessage(Task task, Exception e) {
         Map<String, String> params = new HashMap<>();
         taskService.markTaskAsError(task);
-        params.put("text", "Error creating " + task.getTaskTitle() + " ");
+        params.put("text", "Error+creating+" + task.getTaskTitle() + "+because+" + e.getMessage());
         params.put("chat_id", task.getTelegramId().toString());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(botUrl + botToken + "/sendMessage");
         for (Map.Entry<String, String> entry : params.entrySet()) {
