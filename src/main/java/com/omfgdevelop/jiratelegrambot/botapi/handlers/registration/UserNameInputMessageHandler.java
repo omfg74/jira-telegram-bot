@@ -73,9 +73,9 @@ public class UserNameInputMessageHandler implements MessageHandler {
                 sendMessage.setText(String.format("Пользователя %s не существует в Jira. Если имя введено не верно, то введите /delete_user и повторите авторизацию", message.getText()));
             }
         } else {
-            userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
+            userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
             sendMessage.setChatId(message.getChatId());
-            sendMessage.setText(String.format("Пользователь с именем %s уже есть", message.getText()));
+            sendMessage.setText("На этот telegramId уже назначен пользователь Jira. Введите пароль от вашего пользователя или введите /delete_user для отмены привязки");
         }
         return sendMessage;
     }

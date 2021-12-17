@@ -77,7 +77,6 @@ public class JiraIssueService {
 
         Issuetype issuetype = new Issuetype();
         issuetype.setName("Task");
-        log.debug(new EcsEvent("Username_password").withContext("username", user.getJiraUsername()).withContext("password", encryptionService.decrypt(user.getJiraPassword())));
 
         Project project = new Project();
         project.setKey(task.getProject());

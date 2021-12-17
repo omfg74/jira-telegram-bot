@@ -70,6 +70,8 @@ public class TelegramMessageProcessor {
                 default:
                     userState = userStateCache.getCurrentUserState(userId);
             }
+        } else if (inputMessage.equalsIgnoreCase("/delete_user")) {
+            userState = UserState.DELETE_REQUEST;
         } else {
             userState = userStateCache.getCurrentUserState(userId);
         }
