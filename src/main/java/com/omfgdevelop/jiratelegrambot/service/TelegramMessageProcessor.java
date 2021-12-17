@@ -35,10 +35,10 @@ public class TelegramMessageProcessor {
                 case PROJECT_SELECT:
                     return queryProcessor.processQuery(userStateCache.getCurrentUserState(userId), update);
                 default:
-                    userStateCache.setCurrentUserState(userId, STAND_BY);
+                    userStateCache.setCurrentUserState(userId, userStateCache.getCurrentUserState(userId));
             }
             log.debug("New query from user: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(), update.getCallbackQuery().getData());
-            return new SendMessage(update.getCallbackQuery().getMessage().getChatId(), "CallBackquerry not supporting");
+            return new SendMessage(update.getCallbackQuery().getMessage().getChatId(), "Задача уже назначена на проект");
         }
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
