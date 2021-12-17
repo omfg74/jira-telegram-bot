@@ -8,5 +8,7 @@
     <include file="changes/v0.0/changelog_jira_base_setup.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0/changelog_v0.0_jira_project.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0/010-ddl-task_queue.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0/2021-12-16-changeset_users_add_unique_index_to_telegram_id.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0/2021-12-16-changeset_users_add_password_approved.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

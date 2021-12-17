@@ -9,11 +9,8 @@ import com.omfgdevelop.jiratelegrambot.exception.IssueCreateException;
 import com.omfgdevelop.jiratelegrambot.service.EncryptionService;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
-import com.omfgdevelop.jiratelegrambot.view.jira.issue.Fields;
-import com.omfgdevelop.jiratelegrambot.view.jira.issue.Issue;
-import com.omfgdevelop.jiratelegrambot.view.jira.issue.IssueResponse;
-import com.omfgdevelop.jiratelegrambot.view.jira.issue.Issuetype;
-import com.omfgdevelop.jiratelegrambot.view.jira.prject.Project;
+import com.omfgdevelop.jiratelegrambot.view.jira.issue.*;
+import com.omfgdevelop.jiratelegrambot.view.jira.project.Project;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -66,11 +63,17 @@ public class JiraIssueService {
     @Value("${app.reply.url}")
     private final String replyLink;
 
+    @Value("${jira.admin.username}")
+    private String adminUserName;
+
+    @Value("${jira.admin.password}")
+    private String adminPassword;
+
 
     public IssueResponse createIssue(Task task) throws JsonProcessingException, NotFoundException, IssueCreateException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
-        User user = userService.getUserByUserId(task.getTelegramId());
+        User user = userService.getUserByTelegramId(task.getTelegramId());
 
-        HttpHeaders headers = createHeaders(user.getJiraUsername(), encryptionService.decrypt(user.getJiraPassword()));
+        HttpHeaders headers = createHeaders(adminUserName,adminPassword);
 
         Issuetype issuetype = new Issuetype();
         issuetype.setName("Task");
@@ -79,11 +82,15 @@ public class JiraIssueService {
         Project project = new Project();
         project.setKey(task.getProject());
 
+        Reporter reporter = new Reporter();
+        reporter.setName(user.getJiraUsername());
+
         Fields fields = new Fields();
         fields.setSummary(task.getTaskTitle());
         fields.setDescription(task.getTaskText());
         fields.setProject(project);
         fields.setIssuetype(issuetype);
+        fields.setReporter(reporter);
 
         Issue issue = new Issue();
         issue.setFields(fields);

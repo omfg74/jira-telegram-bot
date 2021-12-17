@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../../../libs/dbchangelog-3.1.xsd">
+    <changeSet id="2021-12-16-changeset_users_add_unique_index_to_telegram_id.xml" author="a.podshivalov">
+
+        <sql>
+            create unique index users_telegram_id_uindex
+            on users (telegram_id);
+        </sql>
+        <rollback>
+            drop index users_telegram_id_uindex;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

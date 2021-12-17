@@ -11,7 +11,8 @@ public enum UserState {
     STAND_BY(7),
     PROJECT_SELECT(8),
     DELETE_REQUEST(10),
-    USER_DELETE_CONFIRM(11);
+    USER_DELETE_CONFIRM(11),
+    BANNED(12);
 
 
     private final Integer value;

@@ -30,7 +30,7 @@ public class UserDeleteRequestHandler implements MessageHandler {
 
     @Override
     public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
-        User user = userService.getUserByUserId(message.getChatId());
+        User user = userService.getUserByTelegramId(message.getChatId());
         if (user != null) {
             userStateCache.setCurrentUserState(message.getFrom().getId(), USER_DELETE_CONFIRM);
             return new SendMessage(message.getChatId(), String.format("Вы уверены что хотите удалить пользователя %s?\nВведите YES для удаления или любой текст для отмены", user.getJiraUsername()));

@@ -22,6 +22,8 @@ public class Common {
             byte[] encodedAuth = Base64.encodeBase64(
                     auth.getBytes(StandardCharsets.US_ASCII));
             String authHeader = "Basic " + new String(encodedAuth);
+            set("cache-control", "no-cache");
+            set("X-Atlassian-Token", "nocheck");
             set("Authorization", authHeader);
         }};
     }

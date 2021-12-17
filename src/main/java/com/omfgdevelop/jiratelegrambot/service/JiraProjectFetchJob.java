@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.mapping.UberMapper;
 import com.omfgdevelop.jiratelegrambot.repository.ProjectRepository;
-import com.omfgdevelop.jiratelegrambot.view.jira.prject.Project;
+import com.omfgdevelop.jiratelegrambot.view.jira.project.Project;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;

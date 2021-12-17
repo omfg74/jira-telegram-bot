@@ -17,4 +17,4 @@ alter table users
     add display_name text;
 
 alter table users
-    add active text;
+    add active boolean;

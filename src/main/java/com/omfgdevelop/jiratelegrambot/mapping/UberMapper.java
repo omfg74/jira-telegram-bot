@@ -1,7 +1,7 @@
 package com.omfgdevelop.jiratelegrambot.mapping;
 
 import com.omfgdevelop.jiratelegrambot.entity.ProjectEntity;
-import com.omfgdevelop.jiratelegrambot.view.jira.prject.Project;
+import com.omfgdevelop.jiratelegrambot.view.jira.project.Project;
 import org.mapstruct.Mapper;
 
 import java.util.List;

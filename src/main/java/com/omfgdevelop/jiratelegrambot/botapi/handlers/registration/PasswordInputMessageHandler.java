@@ -5,8 +5,9 @@ import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
 import com.omfgdevelop.jiratelegrambot.entity.User;
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
-import com.omfgdevelop.jiratelegrambot.service.jira.JiraLoginService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
+import com.omfgdevelop.jiratelegrambot.service.jira.JiraLoginService;
+import com.omfgdevelop.jiratelegrambot.view.jira.auth.Myself;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,11 +15,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.security.auth.login.FailedLoginException;
 import javax.ws.rs.core.NoContentException;
-import java.security.InvalidKeyException;
 import java.util.Set;
 
 import static com.omfgdevelop.jiratelegrambot.config.AppConfig.REGISTERED_USER_SET;
@@ -40,36 +38,45 @@ public class PasswordInputMessageHandler implements MessageHandler {
 
     @Override
     public SendMessage handleInputMessage(Message message) {
-        User exists = userService.getUserByUserId((long) message.getFrom().getId());
+        User exists = userService.getUserByTelegramId((long) message.getFrom().getId());
         SendMessage sendMessage = new SendMessage();
         if (exists != null) {
-            User user = new User();
-            user.setTelegramId((long) message.getFrom().getId());
-            user.setJiraPassword(message.getText());
+            Myself myself = null;
             try {
-                userService.createOrUpdate(user);
-            } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
-                return new SendMessage(message.getChatId(), "Password encrypt error");
-            }
-
-            try {
-                jiraLoginService.getMyself(exists.getTelegramId());
+                myself = jiraLoginService.getMyself(exists.getTelegramId(), message.getText());
             } catch (FailedLoginException loginException) {
-                return new SendMessage(message.getChatId(), "LOggin error");
+                log.error(new EcsEvent(String.format("Jira password check failed for user %s", exists.getJiraUsername())).with(loginException).withContext("user_name", exists.getJiraUsername()));
+                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
+                return new SendMessage(message.getChatId(), "Login error. Try to enter password again");
             } catch (NoContentException noContentException) {
-                return new SendMessage(message.getChatId(), "Cant fetch user data");
+                log.error(new EcsEvent(String.format("Jira password check failed for user %s", exists.getJiraUsername())).with(noContentException).withContext("user_name", exists.getJiraUsername()));
+                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
+                return new SendMessage(message.getChatId(), "Cant fetch user data. Try to enter password again");
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(new EcsEvent(String.format("Jira password check failed for user %s", exists.getJiraUsername())).with(e).withContext("user_name", exists.getJiraUsername()));
+                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
+                return new SendMessage(message.getChatId(), "Jira password check failed. Try to enter password again");
             }
 
-            sendMessage.setChatId(message.getChatId());
-            sendMessage.setText(String.format("Пароль обновлен для пользователя %s.", exists.getJiraUsername()));
-            registeredUserSet.add(Long.valueOf(message.getFrom().getId()));
-            userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
+            if (myself != null && myself.getActive()) {
+                User user = userService.getUserByTelegramId((long) message.getFrom().getId());
+                user.setPasswordApproved(true);
+                userService.updateUser(user);
+                sendMessage.setChatId(message.getChatId());
+                sendMessage.setText(String.format("Регистрация прошла успешно %s.", exists.getJiraUsername()));
+                registeredUserSet.add(Long.valueOf(message.getFrom().getId()));
+                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
+            } else {
+                sendMessage.setChatId(message.getChatId());
+                sendMessage.setText(String.format("Пользователь %s заблокирован в  jira.", exists.getJiraUsername()));
+                registeredUserSet.remove(Long.valueOf(message.getFrom().getId()));
+                userService.deleteUser(Long.valueOf(message.getFrom().getId()));
+                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
+            }
         } else {
             sendMessage.setChatId(message.getChatId());
             sendMessage.setText("Пользователь не найден");
-            log.error(new EcsEvent("User not found").withContext("user_id",message.getChat()));
+            log.error(new EcsEvent("User not found").withContext("user_id", message.getChat()));
         }
         return sendMessage;
     }

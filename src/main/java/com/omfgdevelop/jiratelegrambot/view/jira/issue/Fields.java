@@ -1,23 +1,19 @@
 
 package com.omfgdevelop.jiratelegrambot.view.jira.issue;
 
+import com.fasterxml.jackson.annotation.*;
+import com.omfgdevelop.jiratelegrambot.view.jira.project.Project;
+
+import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.omfgdevelop.jiratelegrambot.view.jira.prject.Project;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "project",
-    "summary",
-    "description",
-    "issuetype"
+        "project",
+        "summary",
+        "description",
+        "issuetype"
 })
 @Generated("jsonschema2pojo")
 public class Fields {
@@ -30,6 +26,9 @@ public class Fields {
     private String description;
     @JsonProperty("issuetype")
     private Issuetype issuetype;
+    @JsonProperty("reporter")
+    private Reporter reporter;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -83,4 +82,13 @@ public class Fields {
         this.additionalProperties.put(name, value);
     }
 
+    @JsonProperty("reporter")
+    public Reporter getReporter() {
+        return reporter;
+    }
+
+    @JsonProperty("reporter")
+    public void setReporter(Reporter reporter) {
+        this.reporter = reporter;
+    }
 }

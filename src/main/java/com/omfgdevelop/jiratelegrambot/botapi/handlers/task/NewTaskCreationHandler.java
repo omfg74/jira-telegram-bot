@@ -37,7 +37,7 @@ public class NewTaskCreationHandler implements MessageHandler {
     public SendMessage handleInputMessage(Message message) {
         Task task = taskService.checkIfTaskIsStarted(message);
         if (task == null) {
-            User user = userService.getUserByUserId((long) message.getFrom().getId());
+            User user = userService.getUserByTelegramId((long) message.getFrom().getId());
             Task createdTask = Task.builder()
                     .telegramId((long) message.getFrom().getId())
                     .status(TaskStatus.TITLE_INPUT.getValue())

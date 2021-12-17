@@ -58,7 +58,7 @@ public class AppConfig {
 
     @Bean(REGISTERED_USER_SET)
     public Set<Long> getConcurrentHashSet() {
-        List<User> users = userRepository.findAllWithUsernameNotNullAndPasswordNotNull();
+        List<User> users = userRepository.findAllWithUsernameNotNullAndPasswordNotNullAndActiveIsTrue();
 
         return users.stream().sequential().map(User::getTelegramId).collect(Collectors.toSet());
     }

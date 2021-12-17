@@ -1,6 +1,5 @@
 package com.omfgdevelop.jiratelegrambot.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -51,4 +50,7 @@ public class User {
 
     @Column(name = "active")
     private Boolean active;
+
+    @Column(name="password_approved")
+    private Boolean passwordApproved;
 }

@@ -17,8 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByTelegramIdAndJiraUsername(Long telegramId, String telegramUsername);
 
-    @Query(value = "select * from users where jira_username is not null and jira_password is not null ", nativeQuery = true)
-    List<User> findAllWithUsernameNotNullAndPasswordNotNull();
+    @Query(value = "select * from users where jira_username is not null and password_approved is true and active is true", nativeQuery = true)
+    List<User> findAllWithUsernameNotNullAndPasswordNotNullAndActiveIsTrue();
 
     @Modifying
     void deleteByTelegramId(Long chatId);

@@ -1,5 +1,5 @@
 
-package com.omfgdevelop.jiratelegrambot.view.jira.prject;
+package com.omfgdevelop.jiratelegrambot.view.jira.project;
 
 import java.util.HashMap;
 import java.util.Map;

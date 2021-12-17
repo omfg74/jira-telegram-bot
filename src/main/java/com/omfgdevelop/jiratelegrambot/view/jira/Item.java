@@ -1,5 +1,5 @@
 
-package com.omfgdevelop.jiratelegrambot.botapi.dto;
+package com.omfgdevelop.jiratelegrambot.view.jira;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,37 +13,37 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "ok",
-    "result"
+    "name",
+    "self"
 })
 @Generated("jsonschema2pojo")
-public class WebhookInfo {
+public class Item {
 
-    @JsonProperty("ok")
-    private Boolean ok;
-    @JsonProperty("result")
-    private Result result;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("self")
+    private String self;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("ok")
-    public Boolean getOk() {
-        return ok;
+    @JsonProperty("name")
+    public String getName() {
+        return name;
     }
 
-    @JsonProperty("ok")
-    public void setOk(Boolean ok) {
-        this.ok = ok;
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @JsonProperty("result")
-    public Result getResult() {
-        return result;
+    @JsonProperty("self")
+    public String getSelf() {
+        return self;
     }
 
-    @JsonProperty("result")
-    public void setResult(Result result) {
-        this.result = result;
+    @JsonProperty("self")
+    public void setSelf(String self) {
+        this.self = self;
     }
 
     @JsonAnyGetter

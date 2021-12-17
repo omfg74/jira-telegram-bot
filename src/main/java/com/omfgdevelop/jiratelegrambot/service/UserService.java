@@ -3,7 +3,6 @@ package com.omfgdevelop.jiratelegrambot.service;
 import com.omfgdevelop.jiratelegrambot.entity.User;
 import com.omfgdevelop.jiratelegrambot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
@@ -31,24 +30,27 @@ public class UserService {
         return user.isPresent();
     }
 
-    public User getUserByUserId(Long id) {
+    public User getUserByTelegramId(Long id) {
         Optional<User> user = userRepository.findByTelegramId((long) id);
         return user.orElse(null);
     }
 
-    public void createOrUpdate(User user) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
+    public boolean createOrUpdate(User user) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         Optional<User> entity = userRepository.findByTelegramId(user.getTelegramId());
+        if (entity.isPresent() && Boolean.TRUE.equals(!entity.get().getActive())) return true;
         User userToCreate = new User();
         if (entity.isPresent()) {
             userToCreate = entity.get();
         }
         userToCreate.setJiraUsername(user.getJiraUsername() != null ? user.getJiraUsername() : userToCreate.getJiraUsername());
         userToCreate.setTelegramId(user.getTelegramId() != null ? user.getTelegramId() : userToCreate.getTelegramId());
-        userToCreate.setJiraPassword(user.getJiraPassword() != null ? encryptionService.encrypt(user.getJiraPassword()) :userToCreate.getJiraPassword());
+        userToCreate.setJiraPassword(user.getJiraPassword() != null ? encryptionService.encrypt(user.getJiraPassword()) : userToCreate.getJiraPassword());
         userToCreate.setTelegramUsername(user.getTelegramUsername() != null ? user.getTelegramUsername() : userToCreate.getTelegramUsername());
         userRepository.save(userToCreate);
+        return false;
     }
 
+    @Transactional
     public void updateUser(User user) {
         userRepository.save(user);
     }
