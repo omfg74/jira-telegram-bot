@@ -49,7 +49,9 @@ public class JiraProjectFetchService {
             for (ProjectEntity entity : entities) {
                 ProjectEntity e = projectRepository.findByKey(entity.getKey());
                 if (e != null) {
-                    entity.setDisplay(e.isDisplay());
+                    entity.setDisplay(e.getDisplay() != null ? e.getDisplay() : false);
+                } else {
+                    entity.setDisplay(false);
                 }
                 projectRepository.save(entity);
             }

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,9 +19,9 @@ public class JiraProjectService {
     }
 
     @Transactional
-    public void updateProjectDisplay(ArrayList<ProjectEntity> projects) {
-        for (int i = 0; i < projects.size(); i++) {
-            projectRepository.updateDisplayProject(projects.get(i).getKey(), projects.get(i).isDisplay());
+    public void updateProjectDisplay(List<ProjectEntity> projects) {
+        for (ProjectEntity project : projects) {
+            projectRepository.updateDisplayProject(project.getKey(), project.getDisplay() != null ? project.getDisplay() : false);
         }
     }
 

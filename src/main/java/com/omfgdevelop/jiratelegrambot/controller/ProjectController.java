@@ -22,7 +22,7 @@ public class ProjectController {
     public String setProjectDisplay(@ModelAttribute(value = "wrapper") ProjectEntityListWrapper entity, RedirectAttributes redirectAttributes) {
         List<ProjectEntity> entities = new ArrayList<>();
         for (int i = 0; i < entity.getProjects().size(); i++) {
-            if (entity.getProjects().get(i).isDisplay()) {
+            if (entity.getProjects().get(i).getDisplay()) {
                 entities.add(entity.getProjects().get(i));
             }
         }

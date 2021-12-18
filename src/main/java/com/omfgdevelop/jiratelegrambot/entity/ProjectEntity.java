@@ -36,5 +36,5 @@ public class ProjectEntity {
     private String projectTypeKey;
 
     @Column(name = "display")
-    private boolean display;
+    private Boolean display;
 }
