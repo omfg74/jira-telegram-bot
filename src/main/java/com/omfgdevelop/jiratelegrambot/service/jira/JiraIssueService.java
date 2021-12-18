@@ -73,7 +73,7 @@ public class JiraIssueService {
     public IssueResponse createIssue(Task task) throws JsonProcessingException, NotFoundException, IssueCreateException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         User user = userService.getUserByTelegramId(task.getTelegramId());
 
-        HttpHeaders headers = createHeaders(adminUserName,adminPassword);
+        HttpHeaders headers = createHeaders(adminUserName, adminPassword);
 
         Issuetype issuetype = new Issuetype();
         issuetype.setName("Task");

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../../../libs/dbchangelog-3.1.xsd">
+    <changeSet id="2021-12-17-jira_projrect.xml" author="a.podshivalov">
+
+        <sql>
+            alter table jira_project
+            add display boolean;
+
+            comment on column jira_project.display is 'Разрешены для показа в списке проектов бота';
+
+        </sql>
+        <rollback>
+        <sql>
+                    alter table jira_project
+                    drop column display;
+
+       </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

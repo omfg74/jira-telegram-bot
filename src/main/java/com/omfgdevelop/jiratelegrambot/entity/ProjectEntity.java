@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class ProjectEntity {
 
     @Id
-    @Column(name = "id",nullable = false)
+    @Column(name = "id", nullable = false)
     private String id;
 
     @Column(name = "expand")
@@ -34,4 +34,7 @@ public class ProjectEntity {
 
     @Column(name = "project_key")
     private String projectTypeKey;
+
+    @Column(name = "display")
+    private boolean display;
 }

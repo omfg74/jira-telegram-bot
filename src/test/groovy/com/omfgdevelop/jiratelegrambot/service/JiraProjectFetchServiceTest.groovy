@@ -6,10 +6,10 @@ import com.omfgdevelop.jiratelegrambot.repository.ProjectRepository
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Ignore
 
-class JiraProjectFetchJobTest extends RepositorySpecBase {
+class JiraProjectFetchServiceTest extends RepositorySpecBase {
 
     @Autowired
-    JiraProjectFetchJob jiraProjectService
+    JiraProjectFetchService jiraProjectService
 
     @Autowired
     ProjectRepository projectRepository
