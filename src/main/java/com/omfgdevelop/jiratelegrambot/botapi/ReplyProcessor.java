@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class ReplyProcessor {
                 log.error(new EcsEvent("Error").with(e).withContext("id", message.getFrom().getId()).withContext("text", message.getText()));
             }
             userStateCache.setCurrentUserState(message.getFrom().getId(), STAND_BY);
-            return new SendMessage(message.getChatId(), "Unsupported command");
+            return new SendMessage(String.valueOf(message.getChatId()), "Unsupported command");
         }
     }
 }

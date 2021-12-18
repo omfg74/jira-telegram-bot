@@ -47,34 +47,34 @@ public class PasswordInputMessageHandler implements MessageHandler {
             } catch (FailedLoginException loginException) {
                 log.error(new EcsEvent(String.format("Jira password check failed for user %s", exists.getJiraUsername())).with(loginException).withContext("user_name", exists.getJiraUsername()));
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
-                return new SendMessage(message.getChatId(), "Login error. Try to enter password again");
+                return new SendMessage(String.valueOf(message.getChatId()), "Login error. Try to enter password again");
             } catch (NoContentException noContentException) {
                 log.error(new EcsEvent(String.format("Jira password check failed for user %s", exists.getJiraUsername())).with(noContentException).withContext("user_name", exists.getJiraUsername()));
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
-                return new SendMessage(message.getChatId(), "Cant fetch user data. Try to enter password again");
+                return new SendMessage(String.valueOf(message.getChatId()), "Cant fetch user data. Try to enter password again");
             } catch (Exception e) {
                 log.error(new EcsEvent(String.format("Jira password check failed for user %s", exists.getJiraUsername())).with(e).withContext("user_name", exists.getJiraUsername()));
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
-                return new SendMessage(message.getChatId(), "Jira password check failed. Try to enter password again");
+                return new SendMessage(String.valueOf(message.getChatId()), "Jira password check failed. Try to enter password again");
             }
 
             if (myself != null && myself.getActive()) {
                 User user = userService.getUserByTelegramId((long) message.getFrom().getId());
                 user.setPasswordApproved(true);
                 userService.updateUser(user);
-                sendMessage.setChatId(message.getChatId());
+                sendMessage.setChatId(String.valueOf(message.getChatId()));
                 sendMessage.setText(String.format("Регистрация прошла успешно %s.", exists.getJiraUsername()));
                 registeredUserSet.add(Long.valueOf(message.getFrom().getId()));
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
             } else {
-                sendMessage.setChatId(message.getChatId());
+                sendMessage.setChatId(String.valueOf(message.getChatId()));
                 sendMessage.setText(String.format("Пользователь %s заблокирован в  jira.", exists.getJiraUsername()));
                 registeredUserSet.remove(Long.valueOf(message.getFrom().getId()));
                 userService.deleteUser(Long.valueOf(message.getFrom().getId()));
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
             }
         } else {
-            sendMessage.setChatId(message.getChatId());
+            sendMessage.setChatId(String.valueOf(message.getChatId()));
             sendMessage.setText("Пользователь не найден");
             log.error(new EcsEvent("User not found").withContext("user_id", message.getChat()));
         }

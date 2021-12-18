@@ -127,7 +127,7 @@ public class TaskService {
     }
 
     @Transactional
-    public void dropAllPendingTasks(Integer id){
+    public void dropAllPendingTasks(Long id){
         taskQueueRepository.deleteAllUncompleted(id);
     }
 }

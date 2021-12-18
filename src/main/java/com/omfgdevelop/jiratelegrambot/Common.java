@@ -46,6 +46,8 @@ public class Common {
         keyboard.add(row);
 
         markup.setKeyboard(keyboard);
-        return new SendMessage().setText(String.format("К какому проекту добавить задачу %s?", task.getTaskTitle())).setChatId(message.getChatId()).setReplyMarkup(markup);
+        SendMessage sendMessage = new SendMessage(String.valueOf(message.getChatId()), String.format("К какому проекту добавить задачу %s?", task.getTaskTitle()));
+        sendMessage.setReplyMarkup(markup);
+        return sendMessage;
     }
 }

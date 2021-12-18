@@ -26,7 +26,7 @@ public class CancelTaskHandler implements MessageHandler {
 
         taskService.dropAllPendingTasks(message.getFrom().getId());
         userStateCache.setCurrentUserState(message.getFrom().getId(),UserState.STAND_BY);
-        return new SendMessage(message.getChatId(),"Все незаконченные задачи отменены. Можно создать новую");
+        return new SendMessage(String.valueOf(message.getChatId()),"Все незаконченные задачи отменены. Можно создать новую");
     }
 
     @Override

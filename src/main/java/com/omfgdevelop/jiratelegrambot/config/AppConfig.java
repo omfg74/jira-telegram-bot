@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.meta.ApiContext;
 
 import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
@@ -52,7 +51,7 @@ public class AppConfig {
 
     @Bean
     public JiraBot getJiraBot(TelegramMessageProcessor messageProcessor) {
-        DefaultBotOptions options = ApiContext.getInstance(DefaultBotOptions.class);
+        DefaultBotOptions options = new DefaultBotOptions();
         return new JiraBot(options, messageProcessor);
     }
 

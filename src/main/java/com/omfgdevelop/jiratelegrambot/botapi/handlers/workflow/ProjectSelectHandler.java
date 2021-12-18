@@ -18,7 +18,7 @@ import static com.omfgdevelop.jiratelegrambot.botapi.UserState.PROJECT_SELECT;
 public class ProjectSelectHandler implements MessageHandler {
     @Override
     public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
-        return new SendMessage(message.getChatId(), "Сначала выберите проект для этой задачи");
+        return new SendMessage(String.valueOf(message.getChatId()), "Сначала выберите проект для этой задачи");
     }
 
     @Override

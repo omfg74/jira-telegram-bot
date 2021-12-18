@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class StandByHandler implements MessageHandler {
     @Override
     public SendMessage handleInputMessage(Message message) {
-        return new SendMessage(message.getChatId(), "Input /create_new_task or /start");
+        return new SendMessage(String.valueOf(message.getChatId()), "Input /create_new_task or /start");
     }
 
     @Override

@@ -60,21 +60,21 @@ public class UserNameInputMessageHandler implements MessageHandler {
             boolean banned = userService.createOrUpdate(user);
             if (banned) {
                 log.warn(new EcsEvent("Попытка регистрации заблокированного пользователя").withContext("user_name", user.getJiraUsername()));
-                return new SendMessage(message.getChatId(), String.format("Пользователь %s заблокирован", user.getJiraUsername()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь %s заблокирован", user.getJiraUsername()));
             }
 
             if (fetchUserDataFromJira(user)) {
-                sendMessage.setChatId(message.getChatId());
+                sendMessage.setChatId(String.valueOf(message.getChatId()));
                 sendMessage.setText(String.format("Добавлен пользователь %s. Введите пароль. Он не будет сохранен, будет использоваться только для подтверждения входа в jira.", message.getText()));
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
             } else {
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
-                sendMessage.setChatId(message.getChatId());
+                sendMessage.setChatId(String.valueOf(message.getChatId()));
                 sendMessage.setText(String.format("Пользователя %s не существует в Jira. Если имя введено не верно, то введите /delete_user и повторите авторизацию", message.getText()));
             }
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
-            sendMessage.setChatId(message.getChatId());
+            sendMessage.setChatId(String.valueOf(message.getChatId()));
             sendMessage.setText("На этот telegramId уже назначен пользователь Jira. Введите пароль от вашего пользователя или введите /delete_user для отмены привязки");
         }
         return sendMessage;

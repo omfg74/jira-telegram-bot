@@ -18,7 +18,7 @@ public class NewRegistrationHandler implements MessageHandler {
     public SendMessage handleInputMessage(Message message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Пользователь не зарегистрирован.\nВведите имя пользователя от JIRA");
-        sendMessage.setChatId(message.getChatId());
+        sendMessage.setChatId(String.valueOf(message.getChatId()));
         userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_USER_NAME);
         return sendMessage;
     }

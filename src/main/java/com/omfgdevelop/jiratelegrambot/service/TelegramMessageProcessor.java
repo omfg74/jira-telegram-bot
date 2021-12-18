@@ -38,7 +38,7 @@ public class TelegramMessageProcessor {
                     userStateCache.setCurrentUserState(userId, userStateCache.getCurrentUserState(userId));
             }
             log.debug("New query from user: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(), update.getCallbackQuery().getData());
-            return new SendMessage(update.getCallbackQuery().getMessage().getChatId(), "Задача уже назначена на проект");
+            return new SendMessage(String.valueOf(update.getCallbackQuery().getMessage().getChatId()), "Задача уже назначена на проект");
         }
         Message message = update.getMessage();
         if (message != null && message.hasText()) {

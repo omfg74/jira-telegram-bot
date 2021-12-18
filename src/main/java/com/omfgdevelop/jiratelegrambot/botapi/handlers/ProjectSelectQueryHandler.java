@@ -39,10 +39,10 @@ public class ProjectSelectQueryHandler implements CallBackQueryHandler {
         } catch (NotFoundException e) {
             log.error(new EcsEvent("Error adding project to task")
                     .withContext("telegram_id", callbackQuery.getFrom().getId()));
-            return new SendMessage(callbackQuery.getMessage().getChatId(),"Error finding current task");
+            return new SendMessage(String.valueOf(callbackQuery.getMessage().getChatId()),"Error finding current task");
         }
         userStateCache.setCurrentUserState(callbackQuery.getFrom().getId(), UserState.NEW_TASK_TEXT);
-        return new SendMessage(callbackQuery.getMessage().getChatId(), String.format("Задача %s добавлена к проекту %s.\nДобавьте описание задачи",
+        return new SendMessage(String.valueOf(callbackQuery.getMessage().getChatId()), String.format("Задача %s добавлена к проекту %s.\nДобавьте описание задачи",
                 task != null ? task.getTaskTitle() : null, task != null ? task.getProject() : null));
     }
 

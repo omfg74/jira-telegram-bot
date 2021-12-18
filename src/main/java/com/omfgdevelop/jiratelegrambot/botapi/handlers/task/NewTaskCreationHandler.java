@@ -45,25 +45,25 @@ public class NewTaskCreationHandler implements MessageHandler {
             taskService.insertTask(createdTask);
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
             if (user != null) {
-                return new SendMessage(message.getChatId(), String.format("Новая задача\nавтор %s.\nПридумайте название.", user.getJiraUsername()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format("Новая задача\nавтор %s.\nПридумайте название.", user.getJiraUsername()));
             } else {
-                return new SendMessage(message.getChatId(), String.format("Такого пользователя нет.\nЗарегистрируйтесь. %s", message.getFrom().getId()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format("Такого пользователя нет.\nЗарегистрируйтесь. %s", message.getFrom().getId()));
             }
         } else {
             switch (task.getStatus()) {
                 case 4:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
-                    return new SendMessage(message.getChatId(), "У вас есть незавершенная задача.\nВведите название для нее.");
+                    return new SendMessage(String.valueOf(message.getChatId()), "У вас есть незавершенная задача.\nВведите название для нее.");
                 case 5:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TEXT);
-                    return new SendMessage(message.getChatId(), "У вас есть незаконченная задача. Осталось ввести описание для нее.");
+                    return new SendMessage(String.valueOf(message.getChatId()), "У вас есть незаконченная задача. Осталось ввести описание для нее.");
                 case 6:
                     userStateCache.setCurrentUserState(message.getFrom().getId(),UserState.PROJECT_SELECT);
                     return createProjectMenu(message, task,projectService);
             }
         }
         log.error(new EcsEvent("Unexpected error while handling case").withContext("case",task.getStatus()));
-        return new SendMessage(message.getChatId(), "Unexpected error");
+        return new SendMessage(String.valueOf(message.getChatId()), "Unexpected error");
 
     }
 

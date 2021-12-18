@@ -15,7 +15,7 @@ public class JiraProjectService {
     private final ProjectRepository projectRepository;
 
     public List<ProjectEntity> getPermittedProjects() {
-        return projectRepository.findAllWhereDisplayIsTrue();
+            return projectRepository.findAllWhereDisplayIsTrue();
     }
 
     @Transactional

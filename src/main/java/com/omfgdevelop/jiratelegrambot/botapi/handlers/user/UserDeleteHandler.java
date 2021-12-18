@@ -29,10 +29,10 @@ public class UserDeleteHandler implements MessageHandler {
         if (message.getText().equals("YES")) {
             userService.deleteUser(message.getChatId());
             userStateCache.removeIdFromCache(message.getChatId());
-            return new SendMessage(message.getChatId(), "Пользователь удален. Можно зарегистрировать нового.\nВведите /start для повторной регистрации.");
+            return new SendMessage(String.valueOf(message.getChatId()), "Пользователь удален. Можно зарегистрировать нового.\nВведите /start для повторной регистрации.");
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), STAND_BY);
-            return new SendMessage(message.getChatId(), "Действие отменено.");
+            return new SendMessage(String.valueOf(message.getChatId()), "Действие отменено.");
         }
     }
 

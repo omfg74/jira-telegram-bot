@@ -33,11 +33,11 @@ public class UserDeleteRequestHandler implements MessageHandler {
         User user = userService.getUserByTelegramId(message.getChatId());
         if (user != null) {
             userStateCache.setCurrentUserState(message.getFrom().getId(), USER_DELETE_CONFIRM);
-            return new SendMessage(message.getChatId(), String.format("Вы уверены что хотите удалить пользователя %s?\nВведите YES для удаления или любой текст для отмены", user.getJiraUsername()));
+            return new SendMessage(String.valueOf(message.getChatId()), String.format("Вы уверены что хотите удалить пользователя %s?\nВведите YES для удаления или любой текст для отмены", user.getJiraUsername()));
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), STAND_BY);
             log.error(new EcsEvent("User not found with id %s.").withContext("telegram_id", message.getChat()));
-            return new SendMessage(message.getChatId(), String.format("Пользователь с id %s не найден.", message.getChatId()));
+            return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь с id %s не найден.", message.getChatId()));
         }
 
     }

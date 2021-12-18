@@ -41,7 +41,7 @@ public class TaskTitleInputHandler implements MessageHandler {
         } catch (NotFoundException e) {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
             log.error(new EcsEvent("Error title input"));
-            return new SendMessage(message.getChatId(), "No task to create found");
+            return new SendMessage(String.valueOf(message.getChatId()), "No task to create found");
         }
 //        return new SendMessage(message.getChatId(), String.format("Task created with title %s.\n Enter task text", task.getTaskTitle()));
 
