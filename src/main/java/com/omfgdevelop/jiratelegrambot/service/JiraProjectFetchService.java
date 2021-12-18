@@ -2,6 +2,7 @@ package com.omfgdevelop.jiratelegrambot.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.omfgdevelop.jiratelegrambot.entity.ProjectEntity;
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.mapping.UberMapper;
 import com.omfgdevelop.jiratelegrambot.repository.ProjectRepository;
@@ -24,7 +25,7 @@ import static com.omfgdevelop.jiratelegrambot.Common.createHeaders;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class JiraProjectFetchJob {
+public class JiraProjectFetchService {
 
     private final RestTemplate restTemplate;
 
@@ -44,7 +45,14 @@ public class JiraProjectFetchJob {
         if (responseEntity.getStatusCode().value() == 200) {
             List<Project> projects = objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Project>>() {
             });
-            projectRepository.saveAll(mapper.map(projects));
+            List<ProjectEntity> entities = mapper.map(projects);
+            for (ProjectEntity entity : entities) {
+                ProjectEntity e = projectRepository.findByKey(entity.getKey());
+                if (e != null) {
+                    entity.setDisplay(e.isDisplay());
+                }
+                projectRepository.save(entity);
+            }
 
         } else if (responseEntity.getStatusCode().value() == 401) {
             throw new FailedLoginException(String.format("Failed to login with username %s", adminUsername));

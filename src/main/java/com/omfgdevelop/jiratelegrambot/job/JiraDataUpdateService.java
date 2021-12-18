@@ -1,7 +1,7 @@
 package com.omfgdevelop.jiratelegrambot.job;
 
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
-import com.omfgdevelop.jiratelegrambot.service.JiraProjectFetchJob;
+import com.omfgdevelop.jiratelegrambot.service.JiraProjectFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class JiraDataUpdateService {
     @Value("${jira.admin.password}")
     private final String adminPassword;
 
-    private final JiraProjectFetchJob projectService;
+    private final JiraProjectFetchService projectService;
 
     @Scheduled(fixedDelayString = "${jira.update.delay}", initialDelay = 0)
     public void process() {

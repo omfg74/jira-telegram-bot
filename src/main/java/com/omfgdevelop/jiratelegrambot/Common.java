@@ -29,7 +29,7 @@ public class Common {
     }
 
     public static SendMessage createProjectMenu(Message message, Task task, JiraProjectService projectService) {
-        List<ProjectEntity> projectList = projectService.getProjects();
+        List<ProjectEntity> projectList = projectService.getPermittedProjects();
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
