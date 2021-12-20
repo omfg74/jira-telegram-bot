@@ -37,6 +37,9 @@ public class NewTaskCreationHandler implements MessageHandler {
         Task task = taskService.checkIfTaskIsStarted(message);
         if (task == null) {
             User user = userService.getUserByTelegramId((long) message.getFrom().getId());
+            if (Boolean.TRUE.equals(!user.getActive()) && Boolean.TRUE.equals(user.getDeleted()))
+                return new SendMessage(message.getChatId().toString(), "Пользователь заблокирован или удален");
+
             Task createdTask = Task.builder()
                     .telegramId((long) message.getFrom().getId())
                     .status(TaskStatus.TITLE_INPUT.getValue())
