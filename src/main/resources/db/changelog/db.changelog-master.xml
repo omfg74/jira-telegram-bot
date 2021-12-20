@@ -11,5 +11,6 @@
     <include file="changes/v0.0/2021-12-16-changeset_users_add_unique_index_to_telegram_id.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0/2021-12-16-changeset_users_add_password_approved.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0/2021-12-17-jira_projrect.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0/2021-12-20-users.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

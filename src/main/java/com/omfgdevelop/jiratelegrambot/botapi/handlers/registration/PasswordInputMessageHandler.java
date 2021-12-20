@@ -61,6 +61,7 @@ public class PasswordInputMessageHandler implements MessageHandler {
             if (myself != null && myself.getActive()) {
                 User user = userService.getUserByTelegramId((long) message.getFrom().getId());
                 user.setPasswordApproved(true);
+                user.setDeleted(false);
                 userService.updateUser(user);
                 sendMessage.setChatId(String.valueOf(message.getChatId()));
                 sendMessage.setText(String.format("Регистрация прошла успешно %s.", exists.getJiraUsername()));

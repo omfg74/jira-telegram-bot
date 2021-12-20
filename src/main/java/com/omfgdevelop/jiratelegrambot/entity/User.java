@@ -53,4 +53,7 @@ public class User {
 
     @Column(name="password_approved")
     private Boolean passwordApproved;
+
+    @Column(name="deleted")
+    private Boolean deleted;
 }
