@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../../../libs/dbchangelog-3.1.xsd">
+    <changeSet id="2021-12-20-tesk_queue.xml" author="a.podshivalov">
+
+        <sql>
+            alter table tasks_queue
+            add chat_id bigint;
+
+            comment on column tasks_queue.chat_id is 'Идентификатор общего чата';
+        </sql>
+        <rollback>
+            <sql>
+                alter table tasks_queue
+                drop column if exists chat_id;
+
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
