@@ -32,7 +32,6 @@ public class NewTaskCreationHandler implements MessageHandler {
     private final JiraProjectService projectService;
 
 
-
     @Override
     public SendMessage handleInputMessage(Message message) {
         Task task = taskService.checkIfTaskIsStarted(message);
@@ -47,6 +46,8 @@ public class NewTaskCreationHandler implements MessageHandler {
             if (user != null) {
                 return new SendMessage(String.valueOf(message.getChatId()), String.format("Новая задача\nавтор %s.\nПридумайте название.", user.getJiraUsername()));
             } else {
+                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
+                userStateCache.removeIdFromCache(message.getFrom().getId());
                 return new SendMessage(String.valueOf(message.getChatId()), String.format("Такого пользователя нет.\nЗарегистрируйтесь. %s", message.getFrom().getId()));
             }
         } else {
@@ -58,11 +59,11 @@ public class NewTaskCreationHandler implements MessageHandler {
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TEXT);
                     return new SendMessage(String.valueOf(message.getChatId()), "У вас есть незаконченная задача. Осталось ввести описание для нее.");
                 case 6:
-                    userStateCache.setCurrentUserState(message.getFrom().getId(),UserState.PROJECT_SELECT);
-                    return createProjectMenu(message, task,projectService);
+                    userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.PROJECT_SELECT);
+                    return createProjectMenu(message, task, projectService);
             }
         }
-        log.error(new EcsEvent("Unexpected error while handling case").withContext("case",task.getStatus()));
+        log.error(new EcsEvent("Unexpected error while handling case").withContext("case", task.getStatus()));
         return new SendMessage(String.valueOf(message.getChatId()), "Unexpected error");
 
     }
