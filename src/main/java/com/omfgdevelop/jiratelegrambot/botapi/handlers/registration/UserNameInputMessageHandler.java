@@ -63,20 +63,32 @@ public class UserNameInputMessageHandler implements MessageHandler {
                 return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь %s заблокирован", user.getJiraUsername()));
             }
 
-            if (fetchUserDataFromJira(user)) {
-                sendMessage.setChatId(String.valueOf(message.getChatId()));
-                sendMessage.setText(String.format("Добавлен пользователь %s. Введите пароль. Он не будет сохранен, будет использоваться только для подтверждения входа в jira.", message.getText()));
-                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
-            } else {
-                userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
-                sendMessage.setChatId(String.valueOf(message.getChatId()));
-                sendMessage.setText(String.format("Пользователя %s не существует в Jira. Если имя введено не верно, то введите /delete_user и повторите авторизацию", message.getText()));
+            return provideUser(user, sendMessage, message);
+        } else if (Boolean.TRUE.equals(exists.getDeleted())) {
+            if (Boolean.FALSE.equals(exists.getActive())) {
+                log.warn(new EcsEvent("Попытка регистрации заблокированного пользователя").withContext("user_name", exists.getJiraUsername()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь %s заблокирован", exists.getJiraUsername()));
             }
+            return provideUser(exists, sendMessage, message);
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
             sendMessage.setChatId(String.valueOf(message.getChatId()));
             sendMessage.setText("На этот telegramId уже назначен пользователь Jira. Введите пароль от вашего пользователя или введите /delete_user для отмены привязки");
         }
+        return sendMessage;
+    }
+
+    private SendMessage provideUser(User user, SendMessage sendMessage, Message message) {
+        if (fetchUserDataFromJira(user)) {
+            sendMessage.setChatId(String.valueOf(message.getChatId()));
+            sendMessage.setText(String.format("Добавлен пользователь %s. Введите пароль. Он не будет сохранен, будет использоваться только для подтверждения входа в jira.", message.getText()));
+            userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
+        } else {
+            userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
+            sendMessage.setChatId(String.valueOf(message.getChatId()));
+            sendMessage.setText(String.format("Пользователя %s не существует в Jira. Если имя введено не верно, то введите /delete_user и повторите авторизацию", message.getText()));
+        }
+
         return sendMessage;
     }
 
