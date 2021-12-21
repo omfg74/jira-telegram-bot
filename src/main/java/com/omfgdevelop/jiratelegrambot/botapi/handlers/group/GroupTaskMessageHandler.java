@@ -43,7 +43,7 @@ public class GroupTaskMessageHandler implements MessageHandler {
     public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         User user = userService.getUserByTelegramId(message.getFrom().getId());
         GroupChat groupChat = groupChatService.getRegisteredChatById(message.getChatId());
-        if (groupChat==null){
+        if (groupChat == null) {
             log.error(new EcsEvent(HandlerConstants.NOT_PERMITTED_GROUP_CHAT).withContext(CHAT_ID, message.getChat().getId()).withContext(USER_ID, message.getFrom().getId()).withContext(MESSAGE_TEXT, message.getText()).withContext(USER_NAME, message.getFrom().getUserName()));
             return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.NOT_PERMITTED_GROUP_CHAT);
         }
@@ -67,10 +67,10 @@ public class GroupTaskMessageHandler implements MessageHandler {
         String title;
         String text = null;
         if (message.getText().contains("|")) {
-            title = message.getText().split("\\|")[0].replace(botName,"");
-            text = message.getText().split("\\|")[1];
+            title = message.getText().split("\\|")[0].replace(botName, "").trim();
+            text = message.getText().split("\\|")[1].trim();
         } else {
-            title = message.getText();
+            title = message.getText().trim();
         }
         Task task = Task.builder()
                 .taskText(text != null ? text : "")

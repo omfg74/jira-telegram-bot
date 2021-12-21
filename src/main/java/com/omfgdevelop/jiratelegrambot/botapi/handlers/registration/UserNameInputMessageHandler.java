@@ -55,7 +55,7 @@ public class UserNameInputMessageHandler implements MessageHandler {
         if (exists == null) {
             User user = new User();
             user.setTelegramId((long) message.getFrom().getId());
-            user.setJiraUsername(message.getText());
+            user.setJiraUsername(message.getText().trim());
             user.setTelegramUsername(message.getFrom().getFirstName());
             boolean banned = userService.createOrUpdate(user);
             if (banned) {
