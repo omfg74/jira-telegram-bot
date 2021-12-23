@@ -21,7 +21,7 @@ public class GroupChatRegistrationHandler implements MessageHandler {
     private final GroupChatService groupChatService;
 
     @Override
-    public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
+    public SendMessage handleInputMessage(Message message) {
         return groupChatService.registerNewChat(message.getChat());
     }
 

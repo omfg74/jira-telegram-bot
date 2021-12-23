@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.task;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -10,6 +11,7 @@ import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
 import com.omfgdevelop.jiratelegrambot.service.jira.JiraProjectService;
+import jdk.internal.org.objectweb.asm.Handle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import static com.omfgdevelop.jiratelegrambot.Common.createProjectMenu;
+import static com.omfgdevelop.jiratelegrambot.LogConstants.*;
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +41,7 @@ public class NewTaskCreationHandler implements MessageHandler {
         if (task == null) {
             User user = userService.getUserByTelegramId((long) message.getFrom().getId());
             if (Boolean.TRUE.equals(!user.getActive()) && Boolean.TRUE.equals(user.getDeleted()))
-                return new SendMessage(message.getChatId().toString(), "Пользователь заблокирован или удален");
+                return new SendMessage(message.getChatId().toString(), HandlerConstants.USER_BLOCKED_OR_DELETED);
 
             Task createdTask = Task.builder()
                     .telegramId((long) message.getFrom().getId())
@@ -47,27 +50,27 @@ public class NewTaskCreationHandler implements MessageHandler {
             taskService.insertTask(createdTask);
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
             if (user != null) {
-                return new SendMessage(String.valueOf(message.getChatId()), String.format("Новая задача\nавтор %s.\nПридумайте название.", user.getJiraUsername()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.NEW_TASK_AND_AUTHOR, user.getJiraUsername()));
             } else {
                 userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
                 userStateCache.removeIdFromCache(message.getFrom().getId());
-                return new SendMessage(String.valueOf(message.getChatId()), String.format("Такого пользователя нет.\nЗарегистрируйтесь. %s", message.getFrom().getId()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.NO_SUCH_USER_REGISTER, message.getFrom().getId()));
             }
         } else {
             switch (task.getStatus()) {
                 case 4:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TITLE);
-                    return new SendMessage(String.valueOf(message.getChatId()), "У вас есть незавершенная задача.\nВведите название для нее.");
+                    return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.YOU_HAVE_PENDING_TASK_ENTER_NAME);
                 case 5:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_TASK_TEXT);
-                    return new SendMessage(String.valueOf(message.getChatId()), "У вас есть незаконченная задача. Осталось ввести описание для нее.");
+                    return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.YOU_HAVE_PENDING_TASK_ENTER_TEXT);
                 case 6:
                     userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.PROJECT_SELECT);
                     return createProjectMenu(message, task, projectService);
             }
         }
-        log.error(new EcsEvent("Unexpected error while handling case").withContext("case", task.getStatus()));
-        return new SendMessage(String.valueOf(message.getChatId()), "Unexpected error");
+        log.error(new EcsEvent(UNEXPECTED_ERROR_CASE).withContext(CASE, task.getStatus()));
+        return new SendMessage(String.valueOf(message.getChatId()), UNEXPECTED_ERROR);
 
     }
 

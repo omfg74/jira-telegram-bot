@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.workflow;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import static com.omfgdevelop.jiratelegrambot.botapi.UserState.PROJECT_SELECT;
 public class ProjectSelectHandler implements MessageHandler {
     @Override
     public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
-        return new SendMessage(String.valueOf(message.getChatId()), "Сначала выберите проект для этой задачи");
+        return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.FERST_CHOOSE_PROJECT_FOR_CURRENT_TASK);
     }
 
     @Override

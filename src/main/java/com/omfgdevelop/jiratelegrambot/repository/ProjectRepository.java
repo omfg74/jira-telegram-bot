@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
@@ -21,4 +22,5 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
     @Query(value = "select * from jira_project p where p.display=true", nativeQuery = true)
     List<ProjectEntity> findAllWhereDisplayIsTrue();
 
+    Optional<ProjectEntity> findOneByKey(String key);
 }

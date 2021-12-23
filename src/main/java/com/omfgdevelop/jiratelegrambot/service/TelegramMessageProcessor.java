@@ -104,6 +104,9 @@ public class TelegramMessageProcessor {
                 case DELETE_USER:
                     userState = UserState.DELETE_REQUEST;
                     break;
+                case REGISTER_CHAT:
+                    userState = UserState.STAND_BY;
+                    return new SendMessage(message.getChatId().toString(),HandlerConstants.ONLY_FOR_GROUP_CHATS);
                 default:
                     userState = userStateCache.getCurrentUserState(userId);
             }

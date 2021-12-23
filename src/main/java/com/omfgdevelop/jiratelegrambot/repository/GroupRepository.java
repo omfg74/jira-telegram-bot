@@ -2,6 +2,7 @@ package com.omfgdevelop.jiratelegrambot.repository;
 
 import com.omfgdevelop.jiratelegrambot.entity.GroupChat;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,11 @@ public interface GroupRepository extends JpaRepository<GroupChat,Long> {
 
     @Query(value = "select * from group_chat where chat_telegram_id=?1", nativeQuery = true)
     Optional<GroupChat> findByChatId(Long id);
+
+    @Query(value = "select * from group_chat where id=?1", nativeQuery = true)
+    Optional<GroupChat> findRegisteredChatById(Long chatId);
+
+    @Modifying
+    @Query(value = "update group_chat set active=?2, project_id=?3 where id=?1",nativeQuery = true)
+    void updateActiveAndProjectLink(Long chatId, Boolean active, String projectId);
 }

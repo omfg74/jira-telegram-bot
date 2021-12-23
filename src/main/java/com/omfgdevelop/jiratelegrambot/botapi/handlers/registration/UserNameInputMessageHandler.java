@@ -1,6 +1,7 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.registration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -25,6 +26,7 @@ import javax.crypto.IllegalBlockSizeException;
 import java.security.InvalidKeyException;
 
 import static com.omfgdevelop.jiratelegrambot.Common.createHeaders;
+import static com.omfgdevelop.jiratelegrambot.LogConstants.USER_NAME;
 
 @Component
 @RequiredArgsConstructor
@@ -59,21 +61,21 @@ public class UserNameInputMessageHandler implements MessageHandler {
             user.setTelegramUsername(message.getFrom().getFirstName());
             boolean banned = userService.createOrUpdate(user);
             if (banned) {
-                log.warn(new EcsEvent("Попытка регистрации заблокированного пользователя").withContext("user_name", user.getJiraUsername()));
-                return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь %s заблокирован", user.getJiraUsername()));
+                log.warn(new EcsEvent("Попытка регистрации заблокированного пользователя").withContext(USER_NAME, user.getJiraUsername()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.USER_BLOCKED, user.getJiraUsername()));
             }
 
             return provideUser(user, sendMessage, message);
         } else if (Boolean.TRUE.equals(exists.getDeleted())) {
             if (Boolean.FALSE.equals(exists.getActive())) {
-                log.warn(new EcsEvent("Попытка регистрации заблокированного пользователя").withContext("user_name", exists.getJiraUsername()));
-                return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь %s заблокирован", exists.getJiraUsername()));
+                log.warn(new EcsEvent("Попытка регистрации заблокированного пользователя").withContext(USER_NAME, exists.getJiraUsername()));
+                return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.USER_BLOCKED, exists.getJiraUsername()));
             }
             return provideUser(exists, sendMessage, message);
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
             sendMessage.setChatId(String.valueOf(message.getChatId()));
-            sendMessage.setText("На этот telegramId уже назначен пользователь Jira. Введите пароль от вашего пользователя или введите /delete_user для отмены привязки");
+            sendMessage.setText(HandlerConstants.ALREDY_EXISTS);
         }
         return sendMessage;
     }
@@ -81,12 +83,12 @@ public class UserNameInputMessageHandler implements MessageHandler {
     private SendMessage provideUser(User user, SendMessage sendMessage, Message message) {
         if (fetchUserDataFromJira(user)) {
             sendMessage.setChatId(String.valueOf(message.getChatId()));
-            sendMessage.setText(String.format("Добавлен пользователь %s. Введите пароль. Он не будет сохранен, будет использоваться только для подтверждения входа в jira.", message.getText()));
+            sendMessage.setText(String.format(HandlerConstants.USER_ADDED_ENTER_PASSWORD, message.getText()));
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_JIRA_PASSWORD);
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.UNREGISTERED);
             sendMessage.setChatId(String.valueOf(message.getChatId()));
-            sendMessage.setText(String.format("Пользователя %s не существует в Jira. Если имя введено не верно, то введите /delete_user и повторите авторизацию", message.getText()));
+            sendMessage.setText(String.format(HandlerConstants.USER_NOT_EXISTS, message.getText()));
         }
 
         return sendMessage;

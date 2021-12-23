@@ -1,6 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.controller;
 
-import com.omfgdevelop.jiratelegrambot.dto.ProjectEntityListWrapper;
+import com.omfgdevelop.jiratelegrambot.view.dto.ProjectEntityListWrapper;
 import com.omfgdevelop.jiratelegrambot.entity.ProjectEntity;
 import com.omfgdevelop.jiratelegrambot.service.jira.JiraProjectService;
 import lombok.RequiredArgsConstructor;
@@ -18,29 +18,31 @@ public class ProjectController {
 
     private final JiraProjectService jiraProjectService;
 
-    @PostMapping("/display_project")
+    private final String ATTR_MESSAGE = "message";
+
+    @PostMapping("/admin/display_project")
     public String setProjectDisplay(@ModelAttribute(value = "wrapper") ProjectEntityListWrapper entity, RedirectAttributes redirectAttributes) {
         List<ProjectEntity> entities = new ArrayList<>();
         for (int i = 0; i < entity.getProjects().size(); i++) {
-            if (entity.getProjects().get(i).getDisplay()) {
+            if (Boolean.TRUE.equals(entity.getProjects().get(i).getDisplay())) {
                 entities.add(entity.getProjects().get(i));
             }
         }
         if (entity.getProjects().isEmpty()) {
-            redirectAttributes.addFlashAttribute("message", "Нет ни одного проекта, загруженного из jira. Не пинайте пианиста он верстает как умеет.");
-            return "redirect:admin";
+            redirectAttributes.addFlashAttribute(ATTR_MESSAGE, "Нет ни одного проекта, загруженного из jira. Не пинайте пианиста он верстает как умеет.");
+            return "redirect:projects";
         }
         if (entities.isEmpty()) {
-            redirectAttributes.addFlashAttribute("message", "Выберите хотя бы один проект. Боту тоже надо кушать.");
-            return "redirect:admin";
+            redirectAttributes.addFlashAttribute(ATTR_MESSAGE, "Выберите хотя бы один проект. Боту тоже надо кушать.");
+            return "redirect:projects";
         }
         try {
             jiraProjectService.updateProjectDisplay(entity.getProjects());
-            redirectAttributes.addFlashAttribute("message", "Обновлено!");
-            return "redirect:admin";
+            redirectAttributes.addFlashAttribute(ATTR_MESSAGE, "Обновлено!");
+            return "redirect:projects";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Ошибка: " + e.getMessage());
-            return "redirect:admin";
+            redirectAttributes.addFlashAttribute(ATTR_MESSAGE, "Ошибка: " + e.getMessage());
+            return "redirect:projects";
 
         }
     }

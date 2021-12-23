@@ -5,10 +5,11 @@ import com.omfgdevelop.jiratelegrambot.entity.GroupChat;
 import com.omfgdevelop.jiratelegrambot.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 
+import javax.transaction.Transactional;
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,15 @@ public class GroupChatService {
         return groupRepository.findAllRegistered().orElse(new ArrayList<>());
     }
 
-    public GroupChat getRegisteredChatById(Long chatId) {
+    public List<GroupChat> getAll() {
+        return groupRepository.findAll();
+    }
+
+    public GroupChat getRegisteredChatByTelegramId(Long chatId) {
         return groupRepository.findRegisteredChatByTelegramId(chatId).orElse(null);
+    }
+    public GroupChat getRegisteredChatById(Long chatId) {
+        return groupRepository.findRegisteredChatById(chatId).orElse(null);
     }
 
     public SendMessage registerNewChat(Chat chat) {
@@ -39,5 +47,10 @@ public class GroupChatService {
         } else {
             return new SendMessage(String.valueOf(chat.getId()), HandlerConstants.CURRENT_CHAT_ALREADY_REGISTERED);
         }
+    }
+
+    @Transactional
+    public void updateActiveAndProjectLink(Long chatId, Boolean active, String projectId) {
+        groupRepository.updateActiveAndProjectLink(chatId,active,projectId);
     }
 }

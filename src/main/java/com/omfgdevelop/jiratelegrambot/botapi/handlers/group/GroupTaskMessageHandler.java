@@ -40,9 +40,9 @@ public class GroupTaskMessageHandler implements MessageHandler {
     private String botName;
 
     @Override
-    public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
+    public SendMessage handleInputMessage(Message message) {
         User user = userService.getUserByTelegramId(message.getFrom().getId());
-        GroupChat groupChat = groupChatService.getRegisteredChatById(message.getChatId());
+        GroupChat groupChat = groupChatService.getRegisteredChatByTelegramId(message.getChatId());
         if (groupChat == null) {
             log.error(new EcsEvent(HandlerConstants.NOT_PERMITTED_GROUP_CHAT).withContext(CHAT_ID, message.getChat().getId()).withContext(USER_ID, message.getFrom().getId()).withContext(MESSAGE_TEXT, message.getText()).withContext(USER_NAME, message.getFrom().getUserName()));
             return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.NOT_PERMITTED_GROUP_CHAT);
@@ -64,6 +64,7 @@ public class GroupTaskMessageHandler implements MessageHandler {
             return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.USER_IS_BANNED);
         }
 
+        if (groupChat.getProject()==null)return new SendMessage(String.valueOf(message.getChatId()),HandlerConstants.NO_CHAT_ASSIGNED);
         String title;
         String text = null;
         if (message.getText().contains("|")) {
@@ -83,7 +84,7 @@ public class GroupTaskMessageHandler implements MessageHandler {
                 .build();
 
         taskService.insertTask(task);
-        return null;
+        return new SendMessage(String.valueOf(message.getChatId()),HandlerConstants.IN_PROGRESS);
     }
 
     @Override

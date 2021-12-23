@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.cancel;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -26,7 +27,7 @@ public class CancelTaskHandler implements MessageHandler {
 
         taskService.dropAllPendingTasks(message.getFrom().getId());
         userStateCache.setCurrentUserState(message.getFrom().getId(),UserState.STAND_BY);
-        return new SendMessage(String.valueOf(message.getChatId()),"Все незаконченные задачи отменены. Можно создать новую");
+        return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.ALL_TASKS_ARE_CANCELED);
     }
 
     @Override

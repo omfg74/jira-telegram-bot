@@ -28,4 +28,8 @@ public class JiraProjectService {
     public List<ProjectEntity> getAllProjects() {
         return projectRepository.findAll();
     }
+
+    public ProjectEntity getProjectByProjectKey(String key){
+        return projectRepository.findOneByKey(key).orElse(null);
+    }
 }

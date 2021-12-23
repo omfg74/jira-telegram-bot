@@ -1,6 +1,7 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.task;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -30,9 +31,9 @@ public class NewTaskTextInputMessageHandler implements MessageHandler {
         Task task = taskService.inputTaskText(message);
         userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
         if (task != null) {
-            return new SendMessage(String.valueOf(message.getChatId()), String.format("Добавлена задача %s\nс описанием:\n%s", task.getTaskTitle(), task.getTaskText()));
+            return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.TASK_ADDED, task.getTaskTitle(), task.getTaskText()));
         }
-        return new SendMessage(String.valueOf(message.getChatId()), "Something wrong you have no pending tasks");
+        return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.YOU_HAVE_NO_PANDING_TASKS);
     }
 
     @Override
