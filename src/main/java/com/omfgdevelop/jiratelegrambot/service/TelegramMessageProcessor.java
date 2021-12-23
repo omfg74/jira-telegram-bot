@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import static com.omfgdevelop.jiratelegrambot.CommandConstants.*;
 
@@ -39,8 +40,8 @@ public class TelegramMessageProcessor {
         SendMessage replyMessage = null;
 
         if (fromGroup(update.getMessage())) {
-            if (!update.getMessage().getText().contains(botAddress) || !groupChatEnable) return null;
-            return handleGroupMessage(update.getMessage());
+            if (update.getMessage()==null||update.getMessage().getText()==null||!update.getMessage().getText().contains(botAddress) || !groupChatEnable) return null;
+            return handleGroupMessage(Objects.requireNonNull(update.getMessage()));
         }
 
         if (update.hasCallbackQuery()) {
@@ -73,7 +74,7 @@ public class TelegramMessageProcessor {
                 case CANCEL_CURRENT_TASK:
                 case DELETE_USER:
                     return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.GO_TO_MAIN_CHAT, botAddress));
-                case "/register_chat":
+                case REGISTER_CHAT:
                     userState = UserState.REGISTER_CHAT;
                     break;
                 default:

@@ -1,6 +1,5 @@
 package com.omfgdevelop.jiratelegrambot.botapi;
 
-import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.service.TelegramMessageProcessor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,12 +39,10 @@ public class JiraBot extends TelegramWebhookBot {
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        if (update.getMessage() == null&& !update.hasCallbackQuery()) {
-            log.error(new EcsEvent("Null message"));
+        if ((update.getMessage() == null || update.getMessage().getText() == null) && update.getCallbackQuery() == null) {
             return null;
         }
-        BotApiMethod message = telegramMessageProcessor.handleMessage(update);
-        return message;
+        return telegramMessageProcessor.handleMessage(update);
     }
 
     @Override
