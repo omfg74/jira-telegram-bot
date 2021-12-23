@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.user;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -33,11 +34,11 @@ public class UserDeleteRequestHandler implements MessageHandler {
         User user = userService.getUserByTelegramId(message.getChatId());
         if (user != null) {
             userStateCache.setCurrentUserState(message.getFrom().getId(), USER_DELETE_CONFIRM);
-            return new SendMessage(String.valueOf(message.getChatId()), String.format("Вы уверены что хотите удалить пользователя %s?\nВведите YES для удаления или любой текст для отмены", user.getJiraUsername()));
+            return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.ARE_YOU_SURE_DELETE_USER, user.getJiraUsername()));
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), STAND_BY);
-            log.error(new EcsEvent("User not found with id %s.").withContext("telegram_id", message.getChat()));
-            return new SendMessage(String.valueOf(message.getChatId()), String.format("Пользователь с id %s не найден.", message.getChatId()));
+            log.error(new EcsEvent(HandlerConstants.USER_NOT_FOUND).withContext("telegram_id", message.getChat()));
+            return new SendMessage(String.valueOf(message.getChatId()), String.format(HandlerConstants.USER_NOT_FOUND, message.getChatId()));
         }
 
     }

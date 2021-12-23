@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+</head>
+<header th:replace="~{fragments/header_fragment :: headFragment}"></header>
+
+<div class="container my-5">
+
+
+    <form th:action="@{/admin/add_project_to_chat}" th:object="${project_to_chat}" th:method="post">
+
+        <div class="form-group">
+            <label>Projects</label>
+            <label th:name="*{chatId}"></label>
+            <!--            <div th:each="model : ${T(com.frontbackend.thymeleaf.bootstrap.model.CarModel).values()}">-->
+            <div th:each="project : ${projects}">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input hidden th:field="*{chatId}">
+                    <input type="radio" th:field="*{projectKey}" th:value="${project.key}" class="custom-control-input">
+                    <label class="custom-control-label" th:for="${#ids.prev('id')}" th:text="${project.key}">model</label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" value="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>
+

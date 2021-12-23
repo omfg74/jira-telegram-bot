@@ -12,7 +12,9 @@ public enum UserState {
     PROJECT_SELECT(8),
     DELETE_REQUEST(10),
     USER_DELETE_CONFIRM(11),
-    BANNED(12);
+    BANNED(12),
+    GROUP_CHAT_MESSAGE(13),
+    REGISTER_CHAT(14);
 
 
     private final Integer value;

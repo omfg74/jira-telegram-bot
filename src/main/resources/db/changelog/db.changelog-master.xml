@@ -4,13 +4,15 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../libs/dbchangelog-3.6.xsd">
 
-    <include file="changes/v0.0/changelog-v0.0-initial.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/changelog_jira_base_setup.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/changelog_v0.0_jira_project.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/010-ddl-task_queue.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/2021-12-16-changeset_users_add_unique_index_to_telegram_id.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/2021-12-16-changeset_users_add_password_approved.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/2021-12-17-jira_projrect.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0/2021-12-20-users.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/changelog-v0.0-initial.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/changelog_jira_base_setup.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/changelog_v0.0_jira_project.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/010-ddl-task_queue.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/2021-12-16-changeset_users_add_unique_index_to_telegram_id.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/2021-12-16-changeset_users_add_password_approved.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/2021-12-17-jira_projrect.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/2021-12-20-group_chat.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/2021-12-20-users.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v1.0.0/2021-12-20-task_queue.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

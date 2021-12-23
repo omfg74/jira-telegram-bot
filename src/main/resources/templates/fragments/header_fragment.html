@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="headFragment">
+    <body>
+    <div class="container my-5">
+
+        <h4 class="my-5" th:text="${title}"></h4>
+        <div>
+
+            <a th:href="@{/admin}" th:marginwidth="20px"
+               class="btn btn-success">Админка
+            </a>
+            <a th:marginwidth="20px" th:href="@{/admin/projects}"
+               class="btn btn-success">Проекты Jira
+            </a>
+            <a th:href="@{/admin/group_chats}"
+               class="btn btn-success">Групповые чаты
+            </a>
+            <a th:href="@{/logout}" style="float: right"
+            class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    </body>
+</header>

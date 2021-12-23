@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.workflow;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class StandByHandler implements MessageHandler {
     @Override
     public SendMessage handleInputMessage(Message message) {
-        return new SendMessage(String.valueOf(message.getChatId()), "Input /create_new_task or /start");
+        return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.START_MAESSGE);
     }
 
     @Override

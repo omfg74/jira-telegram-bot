@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.user;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -29,10 +30,10 @@ public class UserDeleteHandler implements MessageHandler {
         if (message.getText().equals("YES")) {
             userService.deleteUser(message.getChatId());
             userStateCache.removeIdFromCache(message.getChatId());
-            return new SendMessage(String.valueOf(message.getChatId()), "Пользователь удален. Можно зарегистрировать нового.\nВведите /start для повторной регистрации.");
+            return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.USER_IS_DELETED);
         } else {
             userStateCache.setCurrentUserState(message.getFrom().getId(), STAND_BY);
-            return new SendMessage(String.valueOf(message.getChatId()), "Действие отменено.");
+            return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.ACTION_CANCELED);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.task;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -41,11 +42,8 @@ public class TaskTitleInputHandler implements MessageHandler {
         } catch (NotFoundException e) {
             userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.STAND_BY);
             log.error(new EcsEvent("Error title input"));
-            return new SendMessage(String.valueOf(message.getChatId()), "No task to create found");
+            return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.NO_TASK_FOUND);
         }
-//        return new SendMessage(message.getChatId(), String.format("Task created with title %s.\n Enter task text", task.getTaskTitle()));
-
-
     }
 
     @Override

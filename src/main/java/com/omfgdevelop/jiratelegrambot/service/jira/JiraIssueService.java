@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omfgdevelop.jiratelegrambot.entity.Task;
 import com.omfgdevelop.jiratelegrambot.entity.User;
+import com.omfgdevelop.jiratelegrambot.enums.TaskType;
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.exception.IssueCreateException;
 import com.omfgdevelop.jiratelegrambot.service.EncryptionService;
@@ -28,6 +29,7 @@ import javax.crypto.IllegalBlockSizeException;
 import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import static com.omfgdevelop.jiratelegrambot.Common.createHeaders;
@@ -69,6 +71,8 @@ public class JiraIssueService {
     @Value("${jira.admin.password}")
     private String adminPassword;
 
+
+    private static final String CHAT_ID = "chat_id";
 
     public IssueResponse createIssue(Task task) throws JsonProcessingException, NotFoundException, IssueCreateException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         User user = userService.getUserByTelegramId(task.getTelegramId());
@@ -119,7 +123,11 @@ public class JiraIssueService {
                 Map<String, String> params = new HashMap<>();
 
                 params.put("text", "Your+task+is+done+" + replyLink + response.getKey());
-                params.put("chat_id", task.getTelegramId().toString());
+                if (Objects.equals(task.getTaskType(), TaskType.GROUP_CHAT_TASK.getValue())) {
+                    params.put(CHAT_ID, task.getChatId().toString());
+                } else {
+                    params.put(CHAT_ID, task.getTelegramId().toString());
+                }
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(botUrl + botToken + "/sendMessage");
 
 
