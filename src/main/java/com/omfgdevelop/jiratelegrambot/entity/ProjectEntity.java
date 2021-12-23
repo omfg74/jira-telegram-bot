@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Table(name = "jira_project")
 @Entity
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectEntity {
+public class ProjectEntity implements Serializable {
 
     @Id
     @Column(name = "id", nullable = false)

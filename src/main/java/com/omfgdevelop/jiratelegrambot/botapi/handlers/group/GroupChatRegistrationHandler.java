@@ -1,8 +1,8 @@
-package com.omfgdevelop.jiratelegrambot.botapi.handlers.workflow;
+package com.omfgdevelop.jiratelegrambot.botapi.handlers.group;
 
-import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
+import com.omfgdevelop.jiratelegrambot.service.GroupChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,18 +12,21 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.InvalidKeyException;
 
-import static com.omfgdevelop.jiratelegrambot.botapi.UserState.PROJECT_SELECT;
+import static com.omfgdevelop.jiratelegrambot.botapi.UserState.REGISTER_CHAT;
 
 @Component
 @RequiredArgsConstructor
-public class ProjectSelectHandler implements MessageHandler {
+public class GroupChatRegistrationHandler implements MessageHandler {
+
+    private final GroupChatService groupChatService;
+
     @Override
-    public SendMessage handleInputMessage(Message message) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
-        return new SendMessage(String.valueOf(message.getChatId()), HandlerConstants.FERST_CHOOSE_PROJECT_FOR_CURRENT_TASK);
+    public SendMessage handleInputMessage(Message message) {
+        return groupChatService.registerNewChat(message.getChat());
     }
 
     @Override
     public UserState getHandlerName() {
-        return PROJECT_SELECT;
+        return REGISTER_CHAT;
     }
 }

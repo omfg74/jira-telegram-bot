@@ -34,7 +34,7 @@ public class MessageLogAspect {
 
     private void logRequest(String methodName, Object data) {
         try {
-            log.debug(new EcsEvent("Request from mobile device.").withContext("methodname", methodName).withContext("requestBody", MAPPER.writeValueAsString(data).replace("\\", "")));
+            log.info(new EcsEvent("Request from mobile device.").withContext("methodname", methodName).withContext("requestBody", MAPPER.writeValueAsString(data).replace("\\", "")));
         } catch (Exception e) {
             log.error(new EcsEvent("Error writing request log.", e).withContext(METHOD_NAME, methodName));
         }

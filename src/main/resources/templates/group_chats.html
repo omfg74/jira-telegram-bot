@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+</head>
+<header th:replace="~{fragments/header_fragment :: headFragment}"></header>
+
+<body>
+<div class="container my-5">
+
+    <p th:text="${message}" th:if="${message != null}"
+       class="alert alert-primary"></p>
+    <form th:action="@{/admin/update_chats}" th:object="${chats}" th:method="post">
+
+        <table class="table table-striped table-responsive-md">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Project</th>
+                <th>Select project</th>
+                <th>Active</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="chat,stat : *{chats}">
+                <td th:text="${chat.id}"></td>
+                <td th:text="${chat.chatName}"></td>
+                <td th:text="${chat.project.name}" th:if="${chat.project!=null}"></td>
+                <td th:text="----" th:if="${chat.project==null}"></td>
+                <td>
+                    <label>
+                        <select th:field="*{chats[__${stat.index}__].project.id}">
+                            <option th:value="${null}" th:text="---"
+                                    th:selected="chat.project==null"></option>
+                            <option th:each="project: ${projects}" th:value="${project.id}" th:text="${project.key}"
+                                    th:selected="${chat.project.id==project.id}"></option>
+
+                        </select>
+                    </label>
+                    <!--                    <form th:action="@{/admin/project_to_chat}" method="post" th:object="${project_to_chat}">-->
+                    <!--                        <input th:type="text" th:field="*{projectKey}" th:value="${chat.project.key}" hidden/>-->
+                    <!--                        <input th:type="text"  th:field="*{chatId}" th:value="${chat.id}" hidden/>-->
+                    <!--                        <button type="submit" class="btn btn-success" th:value="${chat.project.name}"></button>-->
+                    <!--                    </form>-->
+
+                </td>
+                </td>
+                <td>
+                    <input th:type="text"
+                           th:field="*{chats[__${stat.index}__].id}" hidden/>
+                    <input th:type="checkbox"
+                           th:field="*{chats[__${stat.index}__].active}" th:checked="${chat.active}"/></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" value="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>
+

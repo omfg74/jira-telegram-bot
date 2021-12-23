@@ -1,5 +1,6 @@
 package com.omfgdevelop.jiratelegrambot.botapi.handlers.registration;
 
+import com.omfgdevelop.jiratelegrambot.HandlerConstants;
 import com.omfgdevelop.jiratelegrambot.botapi.UserState;
 import com.omfgdevelop.jiratelegrambot.botapi.UserStateCache;
 import com.omfgdevelop.jiratelegrambot.botapi.handlers.MessageHandler;
@@ -17,7 +18,7 @@ public class NewRegistrationHandler implements MessageHandler {
     @Override
     public SendMessage handleInputMessage(Message message) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText("Пользователь не зарегистрирован.\nВведите имя пользователя от JIRA");
+        sendMessage.setText(HandlerConstants.ENTER_JIRA_USERNAME);
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         userStateCache.setCurrentUserState(message.getFrom().getId(), UserState.NEW_USER_NAME);
         return sendMessage;

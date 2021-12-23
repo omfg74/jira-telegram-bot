@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog ../../../libs/dbchangelog-3.1.xsd">
+    <changeSet id="2021-12-20-group_chat.xml" author="a.podshivalov">
+
+        <sql>
+            create table group_chat
+            (
+            id bigserial not null
+            constraint group_chat_pk
+            primary key,
+            chat_telegram_id bigint not null,
+            chat_telegram_name text,
+            active boolean default false not null,
+            deleted boolean,
+            project_id text
+            );
+
+            comment on table group_chat is 'Список общих проектных чатов';
+
+            comment on column group_chat.chat_telegram_id is 'Telegram id чата';
+
+            comment on column group_chat.chat_telegram_name is 'Название чата';
+
+            comment on column group_chat.active is 'Признак разрешения чату обращаться к боту';
+
+            comment on column group_chat.deleted is 'Признак того что чат удален';
+
+            comment on column group_chat.project_id is 'Идентификатор проекта привязанного к чату';
+
+            create unique index group_chat_chat_telegram_id_uindex
+            on group_chat (chat_telegram_id);
+
+
+
+        </sql>
+        <rollback>
+            <sql>
+                drop table if exists group_chat;
+
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

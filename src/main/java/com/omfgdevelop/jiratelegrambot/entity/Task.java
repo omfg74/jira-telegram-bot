@@ -1,6 +1,5 @@
 package com.omfgdevelop.jiratelegrambot.entity;
 
-import com.omfgdevelop.jiratelegrambot.enums.TaskType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,10 +37,13 @@ public class Task {
     private String taskText;
 
     @Column(name = "task_responsible")
-    private String TaskResponsible;
+    private String taskResponsible;
 
     @Column(name = "project")
     private String project;
+
+    @Column(name = "chat_id")
+    private Long chatId;
 
 
 }
