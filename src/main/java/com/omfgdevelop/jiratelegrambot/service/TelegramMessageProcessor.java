@@ -68,7 +68,7 @@ public class TelegramMessageProcessor {
     private BotApiMethod<?> handleGroupMessage(Message message) {
         UserState userState;
         if (message.getText() != null) {
-            switch (message.getText()) {
+            switch (message.getText().replace(botAddress,"").trim()) {
                 case CREATE_NEW_TASK:
                 case START:
                 case CANCEL_CURRENT_TASK:
