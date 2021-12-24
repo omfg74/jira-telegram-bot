@@ -67,11 +67,11 @@ public class GroupTaskMessageHandler implements MessageHandler {
         if (groupChat.getProject()==null)return new SendMessage(String.valueOf(message.getChatId()),HandlerConstants.NO_CHAT_ASSIGNED);
         String title;
         String text = null;
-        if (message.getText().contains("|")) {
+        if (message.getText().contains("|")&&!message.getText().endsWith("|")) {
             title = message.getText().split("\\|")[0].replace(botName, "").trim();
             text = message.getText().split("\\|")[1].trim();
         } else {
-            title = message.getText().trim();
+            title = message.getText().replace(botName, "").replace("|","").trim();
         }
         Task task = Task.builder()
                 .taskText(text != null ? text : "")
