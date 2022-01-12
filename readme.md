@@ -24,7 +24,7 @@
 ##### Main functions
 `/create_new_task` - starts scenario of task creation
 `/cancel_current_task`- stops scenario of task creation
-`/delete_user` - delete user which assigned tu current telegram id
+`/delete_user` - delete user which assigned to current telegram id
 
 #### Notes 
 For correct user authorization check it needs to be a user lookup permission in Jira for user group.
