@@ -1,14 +1,14 @@
-#Jira telegram bot backend
+# Jira telegram bot backend
 
-###Docker db start
+### Docker db start
 
 ```bash db-recreate.sh```
 
-###liquibase migrations 
+### liquibase migrations 
 
 ```bash updateLocalDb.sh```
 
-####ENV variables need for minimal start
+#### ENV variables need for minimal start
 
 `jira.admin.username` (JIRA_ADMIN_USERNAME) - jira user which has permissions to fetch projects
  
@@ -21,10 +21,10 @@
 `app.webhook.address` (APP_WEBHOOK_ADDRESS) - url of your bot backend
 
 
-#####Main functions
+##### Main functions
 `/create_new_task` - starts scenario of task creation
 `/cancel_current_task`- stops scenario of task creation
 `/delete_user` - delete user which assigned tu current telegram id
 
-####Notes 
+#### Notes 
 For correct user authorization check it needs to be a user lookup permission in Jira for user group.
