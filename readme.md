@@ -28,3 +28,19 @@
 
 #### Notes 
 For correct user authorization check it needs to be a user lookup permission in Jira for user group.
+
+
+##### Debug run script
+`#!/bin/bash
+java -jar -Djira.base.url=http://<jira_url>:<port> \
+-Dapp.webhook.address=https://<backend_url> \
+ -Djira.admin.username=<jira_admin_user>\
+-Djira.admin.password=<jira_admin_password>\
+ -Dapp.telegrambot.token=<bot_token> \
+ -Dspring.profiles.include=jira_update,jira_issue,webhook_check\
+ -Dapp.reply.url=http://<backend_url>:<port>/browse/ \
+ -Dapp.admin.username=admin \
+ -Dapp.admin.password=admin \
+ -Dapp.security.enabled=true \
+ -Dapp.bot.address=@your_bot_name \
+ jira-telegram-bot-0.0.1-SNAPSHOT.jar`
