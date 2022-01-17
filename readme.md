@@ -1,5 +1,7 @@
 # Jira telegram bot backend
 
+Simple telegram bot which can halp you fast create issues in jira using telegram api in private or public chats. Also it can manage public chat permissions and filter jira projects to acccess.
+
 ### Docker db start
 
 ```bash db-recreate.sh```
