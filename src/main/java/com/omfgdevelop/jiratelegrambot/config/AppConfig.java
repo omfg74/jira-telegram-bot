@@ -38,10 +38,6 @@ public class AppConfig {
     public static final String REGISTERED_USER_SET = "registers_users";
     public static final String ACTIVE_SESSION = "active_session";
 
-    @Value("${app.password.secret}")
-    public final String secret;
-    @Value("${app.password.salt}")
-    public final String salt;
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
@@ -78,13 +74,6 @@ public class AppConfig {
         return Cipher.getInstance("AES");
     }
 
-    @Bean
-    public SecretKey keyGenerator() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(secret.toCharArray(), salt.getBytes(), 65536, 256);
-        SecretKey tmp = factory.generateSecret(spec);
-        return new SecretKeySpec(tmp.getEncoded(), "AES");
-    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

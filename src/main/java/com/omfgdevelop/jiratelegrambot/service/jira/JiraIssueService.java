@@ -7,7 +7,6 @@ import com.omfgdevelop.jiratelegrambot.entity.User;
 import com.omfgdevelop.jiratelegrambot.enums.TaskType;
 import com.omfgdevelop.jiratelegrambot.exception.EcsEvent;
 import com.omfgdevelop.jiratelegrambot.exception.IssueCreateException;
-import com.omfgdevelop.jiratelegrambot.service.EncryptionService;
 import com.omfgdevelop.jiratelegrambot.service.TaskService;
 import com.omfgdevelop.jiratelegrambot.service.UserService;
 import com.omfgdevelop.jiratelegrambot.view.jira.issue.*;
@@ -59,8 +58,6 @@ public class JiraIssueService {
     private final String botUrl;
 
     private final LinkedBlockingDeque<Task> queue;
-
-    private final EncryptionService encryptionService;
 
     @Value("${app.reply.url}")
     private final String replyLink;
@@ -171,7 +168,6 @@ public class JiraIssueService {
             builder.queryParam(entry.getKey(), entry.getValue());
         }
         HttpHeaders headers = new HttpHeaders();
-//        headers.set("Accept", "application/json");
         restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity(headers), String.class);
     }
 }

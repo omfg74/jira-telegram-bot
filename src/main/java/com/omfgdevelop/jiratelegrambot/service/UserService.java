@@ -20,8 +20,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final EncryptionService encryptionService;
-
     public Boolean checkIfRegistered(long userId) {
         if (registeredIds.contains(userId)) {
             return true;
@@ -44,7 +42,6 @@ public class UserService {
         }
         userToCreate.setJiraUsername(user.getJiraUsername() != null ? user.getJiraUsername() : userToCreate.getJiraUsername());
         userToCreate.setTelegramId(user.getTelegramId() != null ? user.getTelegramId() : userToCreate.getTelegramId());
-        userToCreate.setJiraPassword(user.getJiraPassword() != null ? encryptionService.encrypt(user.getJiraPassword()) : userToCreate.getJiraPassword());
         userToCreate.setTelegramUsername(user.getTelegramUsername() != null ? user.getTelegramUsername() : userToCreate.getTelegramUsername());
         userRepository.save(userToCreate);
         return false;
